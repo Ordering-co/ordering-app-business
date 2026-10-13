@@ -1,0 +1,6 @@
+{
+  "ios_project": "businessApp",
+  "ios_bundle": "com.ordering.app1",
+  "android_package": "com.businessapp",
+  "root_path": ""
+}

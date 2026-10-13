@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <usb-device class="255" subclass="66" protocol="1" />
+
+    <!-- Star Micronics (existing) -->
+    <usb-device vendor-id="1305" product-id="0003" />   <!--TSP100IIU+/IIIU/IV/IV SK-->
+    <usb-device vendor-id="1305" product-id="0071" />   <!--mC-Print3-->
+    <usb-device vendor-id="1305" product-id="0073" />   <!--mC-Print2-->
+    <usb-device vendor-id="1305" product-id="0025" />   <!--mC-Label3-->
+    <usb-device vendor-id="1305" product-id="0023" />   <!--mPOP-->
+    <usb-device vendor-id="1305" product-id="0001" />   <!--TSP650II/TSP650II SK/TSP700II/TSP800II/SP700/TUP500-->
+    <usb-device vendor-id="1305" product-id="0011" />   <!--BSC10-->
+    <usb-device vendor-id="1305" product-id="0015" />   <!--TSP043-->
+    <usb-device vendor-id="1305" product-id="0017" />   <!--BSC10BR-->
+    <usb-device vendor-id="1305" product-id="0075" />   <!--SK1-211/221/V211-->
+    <usb-device vendor-id="1305" product-id="0077" />   <!--SK1-311/321/V311-->
+    <usb-device vendor-id="1305" product-id="0067" />   <!--SM-S230i-->
+
+    <!-- Seiko Epson Corp. VID 0x04B8 = 1208 (ePOS USB permission filter) -->
+    <usb-device vendor-id="1208" product-id="514" />    <!--0x0202 legacy TM series-->
+    <usb-device vendor-id="1208" product-id="3585" />   <!--0x0E01-->
+    <usb-device vendor-id="1208" product-id="3586" />   <!--0x0E02-->
+    <usb-device vendor-id="1208" product-id="3587" />   <!--0x0E03 TM-T20-->
+    <usb-device vendor-id="1208" product-id="3588" />   <!--0x0E04-->
+    <usb-device vendor-id="1208" product-id="3593" />   <!--0x0E09-->
+    <usb-device vendor-id="1208" product-id="3595" />   <!--0x0E0B-->
+    <usb-device vendor-id="1208" product-id="3601" />   <!--0x0E11-->
+    <usb-device vendor-id="1208" product-id="3603" />   <!--0x0E13-->
+    <usb-device vendor-id="1208" product-id="3605" />   <!--0x0E15 TM-T20II / related-->
+    <usb-device vendor-id="1208" product-id="3607" />   <!--0x0E17-->
+    <usb-device vendor-id="1208" product-id="3609" />   <!--0x0E19-->
+    <usb-device vendor-id="1208" product-id="3612" />   <!--0x0E1C-->
+    <usb-device vendor-id="1208" product-id="3616" />   <!--0x0E20 TM-m10 / related-->
+    <usb-device vendor-id="1208" product-id="3618" />   <!--0x0E22-->
+    <usb-device vendor-id="1208" product-id="3620" />   <!--0x0E24-->
+    <usb-device vendor-id="1208" product-id="3624" />   <!--0x0E28 TM-m30-->
+    <usb-device vendor-id="1208" product-id="3626" />   <!--0x0E2A TM-m30II-SL-->
+    <usb-device vendor-id="1208" product-id="3628" />   <!--0x0E2C-->
+    <usb-device vendor-id="1208" product-id="3630" />   <!--0x0E2E-->
+    <usb-device vendor-id="1208" product-id="3631" />   <!--0x0E2F-->
+    <usb-device vendor-id="1208" product-id="3632" />   <!--0x0E30-->
+    <usb-device vendor-id="1208" product-id="3634" />   <!--0x0E32-->
+    <usb-device vendor-id="1208" product-id="3636" />   <!--0x0E34-->
+    <usb-device vendor-id="1208" product-id="3640" />   <!--0x0E38-->
+    <usb-device vendor-id="1208" product-id="3642" />   <!--0x0E3A-->
+    <usb-device vendor-id="1208" product-id="3644" />   <!--0x0E3C TM-m30II / related-->
+    <usb-device vendor-id="1208" product-id="3646" />   <!--0x0E3E-->
+    <usb-device vendor-id="1208" product-id="3648" />   <!--0x0E40-->
+    <usb-device vendor-id="1208" product-id="3650" />   <!--0x0E42-->
+    <usb-device vendor-id="1208" product-id="3652" />   <!--0x0E44-->
+    <usb-device vendor-id="1208" product-id="3656" />   <!--0x0E48-->
+    <usb-device vendor-id="1208" product-id="3658" />   <!--0x0E4A-->
+    <usb-device vendor-id="1208" product-id="3660" />   <!--0x0E4C-->
+</resources>

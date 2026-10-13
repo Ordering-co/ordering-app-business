@@ -1,0 +1,211 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "NSBluetoothAlwaysUsageDescription" : {
+      "comment" : "Privacy - Bluetooth Always Usage Description",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unsere App verwendet Bluetooth, um Geräte zu finden, eine Verbindung herzustellen und Daten zwischen verschiedenen Geräten zu übertragen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Our app uses bluetooth to find, connect and transfer data between different devices"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nuestra aplicación usa Bluetooth para encontrar, conectar y transferir datos entre diferentes dispositivos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notre application utilise le Bluetooth pour trouver, connecter et transférer des données entre différents appareils."
+          }
+        }
+      }
+    },
+    "NSBluetoothPeripheralUsageDescription" : {
+      "comment" : "Privacy - Bluetooth Peripheral Usage Description",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gewähren Sie Bluetooth-Zugriff, um eine nahtlose Kommunikation mit Druckern und anderen kompatiblen Geräten zu ermöglichen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grant Bluetooth access to enable seamless communication with printers and other compatible devices."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conceda acceso a Bluetooth para permitir una comunicación fluida con impresoras y otros dispositivos compatibles."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accordez l'accès Bluetooth pour permettre une communication fluide avec les imprimantes et autres appareils compatibles."
+          }
+        }
+      }
+    },
+    "NSCameraUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die App benötigt Zugriff auf die Kamera für das Profilbild und zum Hochladen von Bildern zur Kommunikation über die Nachrichtenfunktionen der App."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app requires access to the camera for the profile picture, to upload images to communicate via the messaging features of the app."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La aplicación requiere acceso a la cámara para la foto de perfil y para cargar imágenes para comunicarse a través de las funciones de mensajería de la aplicación."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'application nécessite l'accès à la caméra pour la photo de profil et pour télécharger des images afin de communiquer via les fonctionnalités de messagerie de l'application."
+          }
+        }
+      }
+    },
+    "NSLocalNetworkUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verwenden Sie das lokale Netzwerk für die Kommunikation mit dem Drucker oder die Erkennung von Druckern."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use Local Network for communication with the printer or discovery the printers."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use la red local para comunicarse con la impresora o descubrir impresoras."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utilisez le réseau local pour communiquer avec l'imprimante ou découvrir les imprimantes."
+          }
+        }
+      }
+    },
+    "NSLocationAlwaysAndWhenInUseUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wir verwenden Ihren Standort, um Filialfunktionen zu unterstützen und die Auftragsverwaltung zu verbessern."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "We use your location to support store operations and improve order management."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usamos tu ubicación para apoyar las operaciones de la tienda y mejorar la gestión de pedidos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nous utilisons votre localisation pour soutenir les opérations du magasin et améliorer la gestion des commandes."
+          }
+        }
+      }
+    },
+    "NSLocationWhenInUseUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die App benötigt Zugriff auf Ihren Standort, um filialbezogene Funktionen zu unterstützen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app requires access to your device location to support store-related features."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La aplicación requiere acceso a la ubicación de su dispositivo para admitir funciones relacionadas con la tienda."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'application nécessite l'accès à la localisation de votre appareil pour prendre en charge les fonctionnalités liées au magasin."
+          }
+        }
+      }
+    },
+    "NSPhotoLibraryUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die App benötigt Zugriff auf die Fotomediathek für das Profilbild und zum Hochladen von Bildern zur Kommunikation über die Nachrichtenfunktionen der App."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app requires access to the photo library for the profile picture, to upload images to communicate via the messaging features of the app."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La aplicación requiere acceso a la fototeca para la foto de perfil y para cargar imágenes para comunicarse a través de las funciones de mensajería de la aplicación."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'application nécessite l'accès à la galerie photos pour la photo de profil et pour télécharger des images afin de communiquer via les fonctionnalités de messagerie de l'application."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

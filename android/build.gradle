@@ -1,0 +1,38 @@
+buildscript {
+    ext {
+        buildToolsVersion = "36.0.0"
+        minSdkVersion = 29
+        compileSdkVersion = 36
+        targetSdkVersion = 36
+        ndkVersion = "27.1.12297006"
+        kotlinVersion = "2.1.20"
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+
+        classpath("com.google.gms:google-services:4.4.0")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:2.7.1")
+    }
+}
+
+allprojects {
+    repositories {
+        // Notifee core is published only inside the npm package, not Maven Central.
+        // The library tries to add this repo from its own build.gradle, but that
+        // runs too late when org.gradle.configureondemand is enabled.
+        maven {
+            url "$rootDir/../node_modules/@notifee/react-native/android/libs"
+        }
+        flatDir {
+            dirs "$rootDir/../node_modules/react-native-star-io10/android/src/lib"
+        }
+    }
+}
+
+apply plugin: "com.facebook.react.rootproject"

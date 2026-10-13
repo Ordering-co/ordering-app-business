@@ -1,0 +1,1440 @@
+import React, { useEffect, useState, useRef } from 'react';
+import {
+  TouchableOpacity,
+  ActivityIndicator,
+  StyleSheet,
+  View,
+  ViewStyle,
+  Dimensions,
+  Pressable,
+  Linking,
+} from 'react-native';
+import {
+  GiftedChat,
+  Actions,
+  InputToolbar,
+  Composer,
+  Send,
+  Bubble,
+  Message,
+  MessageImage,
+  BubbleProps,
+  IMessage
+} from 'react-native-gifted-chat';
+import { launchImageLibrary } from 'react-native-image-picker';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { pick, types } from '@react-native-documents/picker';
+import { useTheme } from 'styled-components/native';
+import SignatureScreen from 'react-native-signature-canvas';
+import ParsedText from 'react-native-parsed-text';
+import Clipboard from '@react-native-clipboard/clipboard';
+import moment from 'moment';
+import { Header, TitleHeader, Wrapper, QuickMessageContainer } from './styles';
+import { MessagesParams } from '../../types';
+import { USER_TYPE } from '../../config/constants';
+
+import {
+  ToastType,
+  useToast,
+  Messages as MessagesController,
+  useSession,
+  useUtils,
+  useLanguage,
+  useConfig
+} from '@components';
+
+import { OIcon, OIconButton, OText, OButton, OBottomPopup } from '../shared';
+import { capitalize } from '../../utils';
+const filterSpecialStatus = ['prepared_in', 'delivered_in', 'delivery_datetime']
+const driverManualMessages = ['manual_driver_assignment_comment', 'manual_driver_assignment_author_id']
+/** Attributes whose old/new are plain strings, not ORDER_STATUS indices */
+const plainTextOrderChangeAttributes = ['reject_reason']
+
+/** Matches GiftedChat MessageText layout so custom renderer stays visually aligned */
+const giftedMsgTextPadding = {
+  fontSize: 16,
+  lineHeight: 20,
+  marginTop: 5,
+  marginBottom: 5,
+  marginLeft: 10,
+  marginRight: 10,
+};
+
+const giftedMsgTextCompatStyles = {
+  left: StyleSheet.create({
+    container: {},
+    text: { color: '#000000', ...giftedMsgTextPadding },
+    link: { color: '#000000', textDecorationLine: 'underline' },
+  }),
+  right: StyleSheet.create({
+    container: {},
+    text: { color: '#FFFFFF', ...giftedMsgTextPadding },
+    link: { color: '#FFFFFF', textDecorationLine: 'underline' },
+  }),
+};
+
+const WWW_URL_PATTERN = /^www\./i;
+
+/** Normalizes detected phone strings into digits with optional leading + for tel:/sms: URLs */
+const sanitizePhoneForDial = (raw: string): string | null => {
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+
+  if (trimmed.startsWith('+')) {
+    const restDigits = trimmed.slice(1).replace(/\D/g, '');
+    if (!restDigits) return null;
+    return `+${restDigits}`;
+  }
+
+  const digitsOnly = trimmed.replace(/\D/g, '');
+  return digitsOnly || null;
+};
+
+/** React 19: key must not be spread via {...props} into JSX */
+const splitReactKey = (props: Record<string, any>) => {
+  const { key, ...rest } = props;
+  return { key, rest };
+};
+
+const ChatUI = (props: MessagesParams) => {
+  const {
+    type,
+    order,
+    messages,
+    image,
+    message,
+    messagesToShow,
+    sendMessage,
+    setMessage,
+    canRead,
+    setCanRead,
+    handleSend,
+    setImage,
+    readMessages,
+    isMessagesLoading,
+  } = props;
+
+  const [{ user }] = useSession();
+  const [{ parseDate, parseTime, optimizeImage, getTimeAgo }] = useUtils();
+  const [, t] = useLanguage();
+  const [, { showToast }] = useToast();
+  const theme = useTheme();
+  const [{ configs }] = useConfig();
+  const [messageList, setMessageList] = useState<any>([])
+  const previousStatus = [1, 2, 5, 6, 10, 11, 12, 15, 16, 17]
+  const chatDisabled = previousStatus.includes(order?.status)
+
+  const ORDER_STATUS: any = {
+    0: t('ORDER_STATUS_PENDING', 'Order status pending'),
+    1: t('ORDERS_COMPLETED', 'Order completed'),
+    2: t('ORDER_REJECTED', 'Order rejected'),
+    3: t('ORDER_STATUS_IN_BUSINESS', 'Order status in business'),
+    4: t('ORDER_READY', 'Order ready'),
+    5: t('ORDER_REJECTED_RESTAURANT', 'Order rejected by restaurant'),
+    6: t('ORDER_STATUS_CANCELLEDBYDRIVER', 'Order status cancelled by driver'),
+    7: t('ORDER_STATUS_ACCEPTEDBYRESTAURANT', 'Order status accepted by restaurant'),
+    8: t('ORDER_CONFIRMED_ACCEPTED_BY_DRIVER', 'Order confirmed accepted by driver'),
+    9: t('ORDER_PICKUP_COMPLETED_BY_DRIVER', 'Order pickup completed by driver'),
+    10: t('ORDER_PICKUP_FAILED_BY_DRIVER', 'Order pickup failed by driver'),
+    11: t('ORDER_DELIVERY_COMPLETED_BY_DRIVER', 'Order delivery completed by driver'),
+    12: t('ORDER_DELIVERY_FAILED_BY_DRIVER', 'Order delivery failed by driver'),
+    13: t('PREORDER', 'Preorder'),
+    14: t('ORDER_NOT_READY', 'Order not ready'),
+    15: t('ORDER_PICKEDUP_COMPLETED_BY_CUSTOMER', 'Order picked up completed by customer'),
+    16: t('ORDER_STATUS_CANCELLED_BY_CUSTOMER', 'Order status cancelled by customer'),
+    17: t('ORDER_NOT_PICKEDUP_BY_CUSTOMER', 'Order not picked up by customer'),
+    18: t('ORDER_DRIVER_ALMOST_ARRIVED_BUSINESS', 'Order driver almost arrived to business'),
+    19: t('ORDER_DRIVER_ALMOST_ARRIVED_CUSTOMER', 'Order driver almost arrived to customer'),
+    20: t('ORDER_CUSTOMER_ALMOST_ARRIVED_BUSINESS', 'Order customer almost arrived to business'),
+    21: t('ORDER_CUSTOMER_ARRIVED_BUSINESS', 'Order customer arrived to business'),
+    22: t('ORDER_LOOKING_FOR_DRIVER', 'Order looking for driver'),
+    23: t('ORDER_DRIVER_ON_WAY', 'Driver on way'),
+    24: t('ORDER_DRIVER_WAITING_FOR_ORDER', 'Driver waiting for order'),
+    25: t('ORDER_ACCEPTED_BY_DRIVER_COMPANY', 'Accepted by driver company'),
+    26: t('ORDER_DRIVER_ARRIVED_CUSTOMER', 'Driver arrived to customer')
+  }
+
+  const getLogisticTag = (status: any) => {
+    const keyList: any = {
+      0: t('PENDING', 'Pending'),
+      1: t('IN_PROGRESS', 'In Progress'),
+      2: t('IN_QUEUE', 'In queue'),
+      3: t('EXPIRED', 'Expired'),
+      4: t('RESOLVED', 'Resolved'),
+    }
+    return keyList[status] ? keyList[status] : t('UNKNOWN', 'Unknown')
+  }
+
+  const storeMessageList: any = [
+    { key: 'store_message_1', text: t('STORE_MESSAGE_1', 'store_message_1') },
+    { key: 'store_message_2', text: t('STORE_MESSAGE_2', 'store_message_2') },
+    { key: 'store_message_3', text: t('STORE_MESSAGE_3', 'store_message_3') },
+    { key: 'store_message_4', text: t('STORE_MESSAGE_4', 'store_message_4') }
+  ]
+
+  const driverMessageList: any = [
+    { key: 'driver_message_1', text: t('DRIVER_MESSAGE_1', 'driver_message_1') },
+    { key: 'driver_message_2', text: t('DRIVER_MESSAGE_2', 'driver_message_2') },
+    { key: 'driver_message_3', text: t('DRIVER_MESSAGE_3', 'driver_message_3') },
+    { key: 'driver_message_4', text: t('DRIVER_MESSAGE_4', 'driver_message_4') }
+  ]
+
+  const adminMessageList: any = [
+    { key: 'message_1', text: t('ADMIN_MESSAGE_1', 'admin_message_1') },
+    { key: 'message_2', text: t('ADMIN_MESSAGE_2', 'admin_message_2') },
+    { key: 'message_3', text: t('ADMIN_MESSAGE_3', 'admin_message_3') },
+    { key: 'message_4', text: t('ADMIN_MESSAGE_4', 'admin_message_4') }
+  ]
+
+  const handleClickQuickMessage = (text: string) => {
+    setMessage && setMessage(`${message}${text}`)
+  }
+
+  const { bottom } = useSafeAreaInsets();
+
+  const [formattedMessages, setFormattedMessages] = useState<Array<any>>([]);
+  const [chatLayoutReady, setChatLayoutReady] = useState(false);
+  const windowWidth =
+    Dimensions.get('window').width < Dimensions.get('window').height
+      ? parseInt(parseFloat(String(Dimensions.get('window').width)).toFixed(0))
+      : parseInt(
+        parseFloat(String(Dimensions.get('window').height)).toFixed(0),
+      );
+
+  const [orientation, setOrientation] = useState<string>(
+    Dimensions.get('window').width < Dimensions.get('window').height
+      ? 'Portrait'
+      : 'Landscape',
+  );
+
+  const [isShowSignaturePad, setIsShowSignaturePad] = useState(false)
+
+  const [bottomPopup, setBottomPopup] = useState<
+    | { kind: 'idle' }
+    | { kind: 'phone'; phoneRaw: string; phoneSanitized: string }
+    | { kind: 'copy'; copyText: string }
+  >({ kind: 'idle' });
+
+  const handleCloseBottomPopup = () => setBottomPopup({ kind: 'idle' });
+
+  useEffect(() => {
+    const subscription = Dimensions.addEventListener('change', ({ window: { width, height } }) => {
+      setOrientation(width < height ? 'Portrait' : 'Landscape')
+    })
+    return () => {
+      subscription?.remove?.()
+    }
+  }, [])
+
+  const styles = StyleSheet.create({
+    containerActions: {
+      width: 44,
+      height: 44,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: 0,
+    },
+    containerSend: {
+      width: 44,
+      height: 44,
+      borderRadius: 15,
+      backgroundColor: theme.colors.transparent,
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginHorizontal: 0,
+    },
+    bubbleText: {
+      color: theme.colors.black,
+      fontSize: 12,
+    },
+    toolbarStyle: {
+      padding: 10,
+      flexDirection: 'column-reverse'
+    },
+    accessoryIcon: {
+      height: 32,
+      width: 32,
+      minWidth: 32,
+      borderRadius: 32,
+      resizeMode: 'stretch',
+    },
+    shadow: {
+      height: 33,
+      width: 33,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 3,
+      borderRadius: 30,
+      backgroundColor: theme.colors.clear,
+    },
+    avatar: {
+      height: 17,
+      width: 17,
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: 3,
+      borderRadius: 30,
+      backgroundColor: theme.colors.white,
+      marginLeft: 4,
+    },
+    avatarIcon: {
+      height: 16,
+      width: 16,
+      borderRadius: 50,
+      resizeMode: 'stretch',
+    },
+    firstMessage: {
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: theme.colors.inputChat,
+      paddingVertical: 10,
+      borderRadius: 30,
+    },
+    firstMessageText: {
+      color: theme.colors.textGray,
+      fontSize: 16,
+    },
+    timeText: {
+      fontSize: 12,
+      paddingLeft: 12,
+      paddingRight: 5,
+      color: theme.colors.unselectText,
+    },
+    editButton: {
+      borderRadius: 50,
+      backgroundColor: '#E9ECEF',
+      marginRight: 10,
+      height: 32,
+      borderWidth: 1,
+      paddingLeft: 0,
+      paddingRight: 0
+    }
+  });
+  const [file, setFile] = useState({
+    uri: '',
+    type: '',
+    name: '',
+    size: 0,
+  });
+
+  const onChangeMessage = (val: string) => {
+    setMessage && setMessage(val);
+  };
+
+  const removeImage = () => {
+    setImage && setImage(null);
+    setFile && setFile({ ...file, uri: '', type: '', name: '', size: 0 });
+  };
+
+  const attachIcons: any = {
+    jpeg: theme.images.general.imageFile,
+    png: theme.images.general.imageFile,
+    pdf: theme.images.general.pdfFile,
+    doc: theme.images.general.docFile,
+  };
+
+  const handleDocumentPicker = async () => {
+    try {
+      const [res] = await pick({
+        type: [types.allFiles],
+      });
+      if (!res) return;
+      const { uri, type, name, size } = res;
+      const [, typeFile] = (type || '').split('/');
+      setFile({ ...file, uri, type: typeFile || '', name: name || '', size: size || 0 });
+    } catch (err: any) {
+      if (err.code === 'DOCUMENT_PICKER_CANCELED') {
+        // User cancelled the picker, exit any dialogs or menus and move on
+      } else {
+        throw err;
+      }
+    }
+  };
+
+  const handleImagePicker = () => {
+    launchImageLibrary(
+      {
+        mediaType: 'photo',
+        maxHeight: 2048,
+        maxWidth: 2048,
+        includeBase64: true,
+        quality: 1
+      },
+      (response: any) => {
+        const image = response.assets?.[0];
+        if (!image) return
+        if (image.didCancel) {
+          console.log('User cancelled image picker');
+        } else if (image.errorMessage) {
+          console.log('ImagePicker Error: ', image.errorMessage);
+          showToast(ToastType.Error, image.errorMessage);
+        } else {
+          if (image.uri) {
+            const url = `data:${image.type};base64,${image.base64}`;
+            setImage && setImage(url);
+          } else {
+            showToast(ToastType.Error, t('IMAGE_NOT_FOUND', 'Image not found'));
+          }
+        }
+      },
+    );
+  };
+
+  const handleFilter = (value: any, reader: string) => {
+    const isAdmin = user?.level === 0;
+    const readersCount = [
+      ...new Map<string, boolean>(Object.entries(canRead)).values(),
+    ].filter((read: boolean) => read).length;
+    const minReaders = isAdmin ? 2 : order?.driver ? 3 : 4;
+
+    if (minReaders === 4) {
+      return;
+    }
+
+    if (readersCount > minReaders || value[reader]) {
+      setCanRead({ ...canRead, ...value });
+    } else if (reader !== 'business' && (isAdmin || user?.level === 4)) {
+      setCanRead({ ...canRead, ...value, business: true });
+    } else if (reader !== 'customer') {
+      setCanRead({ ...canRead, ...value, customer: true });
+    } else {
+      setCanRead({ ...canRead, ...value, driver: true });
+    }
+  };
+
+  const onSubmit = (values: any) => {
+    handleSend && handleSend();
+    setImage && setImage(null);
+    setFile && setFile({ ...file, uri: '', type: '', name: '', size: 0 });
+    setMessage && setMessage('');
+    setIsShowSignaturePad(false)
+  };
+
+  const messageConsole = (message: any) => {
+    return message.change?.attribute && (
+      <View
+        style={{
+          ...styles.firstMessage,
+          marginHorizontal: 0,
+          paddingHorizontal: 32,
+          width: 320,
+        }}>
+        <OText
+          numberOfLines={3}
+          style={{ ...styles.firstMessageText, textAlign: 'center' }}
+        >
+          {
+            (message.change?.attribute === 'driver_group_id' || driverManualMessages.includes(message.change?.attribute) || plainTextOrderChangeAttributes.includes(message.change?.attribute))
+              ? message.change.old
+                ? t('ORDER_ATTRIBUTE_CHANGED_FROM_TO', 'Order _attribute_ changed from _from_ to _to_.')
+                  .replace('_attribute_', t(message.change?.attribute.toUpperCase(), capitalize(message?.change?.attribute?.replace(/_/g, ' ') || '')))
+                  .replace('_from_', message.change.old)
+                  .replace('_to_', message.change.new)
+                : t('ORDER_ATTRIBUTE_CHANGED_TO', 'Order _attribute_ changed to _to_.')
+                  .replace('_attribute_', t(message.change?.attribute.toUpperCase(), capitalize(message?.change?.attribute?.replace(/_/g, ' ') || '')))
+                  .replace('_to_', message.change.new)
+              : message.change?.attribute !== 'driver_id'
+                ?
+                `${t('ORDER', 'Order')} ${t(message?.change?.attribute?.toUpperCase(), capitalize(message?.change?.attribute?.replace(/_/g, ' ') || ''))} ${message.change?.attribute === 'manual_driver_assignment_comment' ? t('CHANGED', 'Changed') : t('CHANGED_FROM', 'Changed from')} ${filterSpecialStatus.includes(message?.change?.attribute)
+                  ? `${message?.change?.old === null ? '0' : message?.change?.old} ${t('TO', 'to')} ${message?.change?.new} ${t('MINUTES', 'Minutes')}`
+                  : `${message?.change?.attribute !== 'logistic_status'
+                    ? message?.change?.old !== null && ORDER_STATUS[parseInt(message?.change?.old, 10)]
+                    : message?.change?.old !== null && getLogisticTag(message?.change?.old)} ${t('TO', 'to')} ${message?.change?.attribute !== 'logistic_status'
+                      ? ORDER_STATUS[parseInt(message?.change?.new, 10)]
+                      : getLogisticTag(message?.change?.new)}`
+                }`
+                : message?.change?.new
+                  ?
+                  `${message?.driver?.name} ${message?.driver?.lastname !== null ? message?.driver?.lastname : ''} ${t('WAS_ASSIGNED_AS_DRIVER', 'Was assigned as driver')} ${message?.comment ? message?.comment?.length : ''}`
+                  :
+                  `${t('DRIVER_UNASSIGNED', 'Driver unassigned')}`
+          }
+        </OText>
+        <OText size={10} color={'#aaa'} style={{ alignSelf: 'flex-start' }}>
+          {parseTime(message?.created_at, { outputFormat: 'hh:mma' })}
+        </OText>
+      </View>
+    );
+  };
+
+  const AvatarsConsole = () => {
+    return (
+      <View style={{ flexDirection: 'row' }}>
+        <View style={styles.avatar}>
+          <OIcon
+            url={optimizeImage(order?.business?.logo, 'h_300,c_limit')}
+            src={!order?.business?.logo && theme.images.dummies.businessLogo}
+            width={16}
+            height={16}
+            style={styles.avatarIcon}
+          />
+        </View>
+
+        <View style={styles.avatar}>
+          <OIcon
+            url={optimizeImage(
+              order?.customer?.photo || theme?.images?.dummies?.customerPhoto,
+              'h_300,c_limit',
+            )}
+            style={styles.avatarIcon}
+          />
+        </View>
+
+        {order?.driver && (
+          <View style={styles.avatar}>
+            <OIcon
+              url={
+                optimizeImage(order?.driver?.photo, 'h_300,c_limit') ||
+                theme?.images?.dummies?.driverPhoto
+              }
+              width={16}
+              height={16}
+              style={styles.avatarIcon}
+            />
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  useEffect(() => {
+    if (user.level === 0) setMessageList(adminMessageList)
+    else if (user.level === 2) setMessageList(storeMessageList)
+    else if (user.level === 4) setMessageList(driverMessageList)
+    else setMessageList([])
+  }, [user?.level])
+
+  useEffect(() => {
+    let newMessages: Array<any> = [];
+    const console = (
+      <View style={{ flexDirection: 'column', width: windowWidth - 100 }}>
+        <View style={styles.firstMessage}>
+          <OText style={styles.firstMessageText}>
+            {t('ORDER_PLACED_FOR', 'Order placed for')}{' '}
+            <OText style={{ ...styles.firstMessageText, fontWeight: 'bold' }}>
+              {parseDate(order?.created_at)}
+            </OText>
+          </OText>
+
+          <OText style={{ ...styles.firstMessageText, textAlign: 'center' }}>
+            {t('VIA', 'Via')}{' '}
+            {order?.app_id
+              ? t(order?.app_id.toUpperCase(), order?.app_id)
+              : t('OTHER', 'Other')}
+          </OText>
+        </View>
+
+        <View>
+          <OText size={9} color={theme.colors.textGray}>
+            {`${t('SENT_TO', 'Sent to')}:`}
+          </OText>
+
+          <AvatarsConsole />
+        </View>
+      </View>
+    );
+
+    const firstMessage = {
+      _id: 0,
+      type: 0,
+      text: console,
+      createdAt: parseDate(order?.created_at, { outputFormat: 'YYYY-MM-DD HH:mm:ss' }),
+      system: true,
+    };
+    (messages?.messages || []).forEach((message: any) => {
+      let newMessage;
+      const messageOrderId = message?.order_id ?? message?.order?.id
+      if (
+        parseInt(String(messageOrderId), 10) === order?.id &&
+        message.type !== 0 &&
+        (messagesToShow?.messages?.length ||
+          message?.can_see?.includes?.('2') ||
+          message?.can_see?.includes?.('0') ||
+          message?.can_see?.includes?.(2) ||
+          message?.can_see?.includes?.(0) ||
+          ((message?.can_see?.includes?.('4') || message?.can_see?.includes?.(4)) && (type === USER_TYPE.DRIVER || user?.level === 4)))
+      ) {
+        newMessage = {
+          _id: message.id,
+          text: message.type === 1 ? messageConsole(message) : message.comment,
+          createdAt: message.type !== 0 && parseDate(message?.created_at, { outputFormat: 'YYYY-MM-DD HH:mm:ss' }),
+          image: message.source,
+          type: message.type,
+          system: message.type === 1,
+          user: {
+            _id: message.author?.id,
+            name: message.author?.name,
+            can_see: message?.can_see,
+            level: message.author?.level,
+            avatar:
+              message.author?.id !== user?.id && type === USER_TYPE.DRIVER
+                ? order?.driver?.photo
+                : order?.business?.logo,
+          },
+        };
+      }
+      if (message.type === 0) {
+        newMessage = firstMessage;
+      }
+      if (newMessage) {
+        newMessages = [...newMessages, newMessage];
+      }
+    });
+    let _arrayMessages = [...newMessages.reverse()]
+
+    if (configs?.order_logbook_enabled?.value === '0' && user?.level === 4) {
+      _arrayMessages = _arrayMessages.filter(msg => msg.type !== 1 && msg.type !== 0)
+    }
+    setFormattedMessages(_arrayMessages);
+  }, [messages?.messages, messages?.loading, order?.id, type, user?.level, configs?.order_logbook_enabled?.value]);
+
+  useEffect(() => {
+    setChatLayoutReady(false);
+  }, [order?.id]);
+
+  useEffect(() => {
+    if (!order?.driver) {
+      setCanRead({ ...canRead, driver: false });
+    } else {
+      setCanRead({ ...canRead, driver: true });
+    }
+  }, [order?.driver]);
+
+  const RenderActionsAttach = (props: any) => {
+    return (
+      <Actions
+        {...props}
+        containerStyle={styles.containerActions}
+        optionTintColor={theme.colors.actionsIcon}
+        icon={() => (
+          <>
+            <OIconButton
+              borderColor={theme.colors.transparent}
+              style={{ width: 28, height: 28 }}
+              icon={attachIcons[file?.type] || theme.images.general.attach}
+              iconStyle={{
+                width: 28,
+                height: 28,
+                tintColor: theme.colors.textGray,
+              }}
+              onClick={handleDocumentPicker}
+              iconCover
+            />
+
+            {file?.type.length > 0 && (
+              <TouchableOpacity
+                style={{
+                  position: 'absolute',
+                  top: -5,
+                  right: -5,
+                  borderColor: theme.colors.backgroundDark,
+                  backgroundColor: theme.colors.white,
+                  borderRadius: 25,
+                }}
+                onPress={() => removeImage()}>
+                <MaterialCommunityIcon
+                  name="close-circle-outline"
+                  color={theme.colors.backgroundDark}
+                  size={24}
+                />
+              </TouchableOpacity>
+            )}
+          </>
+        )}
+      />
+    );
+  };
+
+  const renderAccessory = () => (
+    !chatDisabled &&
+    <View>
+      <Header
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        horizontal
+        nestedScrollEnabled={true}
+      >
+        {user?.level !== 2 && (
+          <Pressable
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              opacity: canRead?.business ? 1 : 0.25,
+              marginRight: 25,
+            }}
+            onPress={() =>
+              handleFilter({ business: !canRead?.business }, 'business')
+            }>
+            <View
+              style={{
+                ...styles.shadow,
+                shadowColor: canRead?.business
+                  ? theme.colors.shadow
+                  : theme.colors.brightness,
+              }}>
+              <OIcon
+                url={optimizeImage(order?.business?.logo, 'h_300,c_limit')}
+                src={
+                  !order?.business?.logo && theme.images.dummies.businessLogo
+                }
+                style={styles.accessoryIcon}
+              />
+            </View>
+
+            <TitleHeader>
+              <OText adjustsFontSizeToFit size={16} weight="600">
+                {order?.business?.name}
+              </OText>
+
+              <OText
+                adjustsFontSizeToFit
+                color={theme.colors.unselectText}
+                size={13}>
+                {t('BUSINESS', 'Business')}
+              </OText>
+            </TitleHeader>
+          </Pressable>
+        )}
+
+        <Pressable
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            opacity: canRead?.customer ? 1 : 0.25,
+            marginRight: 25,
+          }}
+          onPress={() =>
+            handleFilter({ customer: !canRead?.customer }, 'customer')
+          }>
+          <View
+            style={{
+              ...styles.shadow,
+              shadowColor: canRead?.customer
+                ? theme.colors.shadow
+                : theme.colors.brightness,
+            }}>
+            <OIcon
+              url={optimizeImage(
+                order?.customer?.photo || theme?.images?.dummies?.customerPhoto,
+                'h_300,c_limit',
+              )}
+              style={styles.accessoryIcon}
+            />
+          </View>
+
+          <TitleHeader>
+            <OText adjustsFontSizeToFit size={16} weight="600">
+              {order?.customer?.name}
+            </OText>
+
+            <OText
+              adjustsFontSizeToFit
+              color={theme.colors.unselectText}
+              size={13}>
+              {t('CUSTOMER', 'Customer')}
+            </OText>
+          </TitleHeader>
+        </Pressable>
+
+        {order?.driver && user?.level !== 4 && (
+          <Pressable
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              opacity: canRead?.driver ? 1 : 0.25,
+              marginRight: 25,
+            }}
+            onPress={() =>
+              handleFilter({ driver: !canRead?.driver }, 'driver')
+            }>
+            <View
+              style={{
+                ...styles.shadow,
+                shadowColor: canRead?.driver
+                  ? theme.colors.shadow
+                  : theme.colors.brightness,
+              }}>
+              <OIcon
+                url={
+                  optimizeImage(order?.driver?.photo, 'h_300,c_limit') ||
+                  theme?.images?.dummies?.driverPhoto
+                }
+                style={styles.accessoryIcon}
+              />
+            </View>
+
+            <TitleHeader>
+              <OText adjustsFontSizeToFit size={16} weight="600">
+                {order?.driver?.name}
+              </OText>
+
+              <OText
+                adjustsFontSizeToFit
+                color={theme.colors.unselectText}
+                size={13}>
+                {t('DRIVER', 'Driver')}
+              </OText>
+            </TitleHeader>
+          </Pressable>
+        )}
+      </Header>
+      <QuickMessageContainer
+        contentContainerStyle={{
+          alignItems: 'center'
+        }}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+      >
+        {messageList.map((quickMessage: any, i: number) => (
+          <React.Fragment key={i}>
+            <OButton
+              text={quickMessage.text}
+              bgColor={theme?.colors?.white}
+              borderColor={theme?.colors?.tabBar}
+              imgRightSrc={null}
+              textStyle={{
+                fontSize: 14,
+                color: theme.colors.textGray,
+                fontWeight: '400',
+              }}
+              style={{ ...styles.editButton }}
+              onClick={() => handleClickQuickMessage((message?.length ?? 0) > 0 ? ' ' + quickMessage.text : quickMessage.text)}
+            />
+          </React.Fragment>
+        ))}
+      </QuickMessageContainer>
+    </View>
+
+  );
+
+  const userRoles: any = {
+    0: t('ADMINISTRATOR', 'Administrator'),
+    1: t('CITY_MANAGER', 'City manager'),
+    2: t('BUSINESS_OWNER', 'Business owner'),
+    3: t('CUSTOMER', 'Customer'),
+    4: t('DRIVER', 'Driver'),
+    5: t('DRIVER_MANAGER', 'Driver manager'),
+  };
+
+  const renderInputToolbar = (props: any) => {
+    const { key, rest } = splitReactKey(props);
+    return (
+      <InputToolbar
+        key={key}
+        {...rest}
+        containerStyle={styles.toolbarStyle}
+        primaryStyle={{ alignItems: 'center', justifyContent: 'space-between' }}
+        accessoryStyle={{ position: 'relative', marginBottom: 45 }}
+        renderAccessory={() => renderAccessory()}
+      />
+    );
+  };
+
+  const renderComposer = (props: any) => {
+    const { key, rest } = splitReactKey(props);
+    return (
+      chatDisabled ? (
+        <View
+          style={{
+            width: '100%',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}
+        >
+          <MaterialCommunityIcon
+            name='close-octagon-outline'
+            size={24}
+          />
+          <OText size={14}>{t('NOT_SEND_MESSAGES', 'You can\'t send messages because the order has ended')}</OText>
+        </View>
+      ) : (
+        <View
+          style={{
+            flex: 1,
+            flexDirection: 'row',
+            height: 44,
+            backgroundColor: theme.colors.inputChat,
+            borderRadius: 15,
+            alignItems: 'center',
+            paddingRight: 10,
+            marginRight: 8,
+          }}>
+          <Composer
+            key={key}
+            {...rest}
+            textInputStyle={{
+              flex: 1,
+              borderRadius: 15,
+              borderColor: theme.colors.transparent,
+              borderWidth: 0,
+              color: '#010300',
+              backgroundColor: theme.colors.inputChat,
+            }}
+            textInputProps={{
+              value: message,
+              onSubmitEditing: onSubmit,
+              returnKeyType: message ? 'send' : 'done',
+              blurOnSubmit: true,
+              multiline: false,
+              numberOfLines: 1,
+              autoCorrect: false,
+              autoComplete: 'off',
+              enablesReturnKeyAutomatically: false,
+            } as any}
+            placeholder={t('WRITE_MESSAGE', 'Write message')}
+            placeholderTextColor={theme.colors.composerPlaceHolder}
+          />
+
+          <TouchableOpacity
+            onPress={() => {
+              setImage && setImage(null);
+              setIsShowSignaturePad(!isShowSignaturePad);
+            }}>
+            <OIcon
+              src={theme.images.general.pen}
+              style={{ width: 22, height: 22 }}
+            />
+          </TouchableOpacity>
+
+          {!file.type && (
+            <Actions
+              key={key}
+              {...rest}
+              containerStyle={styles.containerActions}
+              optionTintColor="#222845"
+              icon={() => (
+                <>
+                  {!file?.type && (
+                    <>
+                      <OIconButton
+                        borderColor={theme.colors.transparent}
+                        icon={
+                          !isShowSignaturePad && image
+                            ? { uri: image }
+                            : theme.images.general.imageChat
+                        }
+                        iconStyle={{
+                          borderRadius: image ? 10 : 0,
+                          width: image ? 32 : 28,
+                          height: image ? 32 : 28,
+                        }}
+                        onClick={handleImagePicker}
+                        iconCover
+                      />
+
+                      {!!image && !isShowSignaturePad && (
+                        <TouchableOpacity
+                          style={{
+                            position: 'absolute',
+                            top: -5,
+                            right: -5,
+                            borderColor: theme.colors.backgroundDark,
+                            backgroundColor: theme.colors.white,
+                            borderRadius: 25,
+                          }}
+                          onPress={() => removeImage()}>
+                          <MaterialCommunityIcon
+                            name="close-circle-outline"
+                            color={theme.colors.backgroundDark}
+                            size={24}
+                          />
+                        </TouchableOpacity>
+                      )}
+                    </>
+                  )}
+                </>
+              )}
+            />
+          )}
+        </View>
+      )
+    );
+  };
+
+  const renderSend = (props: any) => {
+    const { key, rest } = splitReactKey(props);
+    return (
+      !chatDisabled &&
+      <Send
+        key={key}
+        {...rest}
+        disabled={
+          sendMessage?.loading || (message === '' && !image) || isMessagesLoading
+        }
+        alwaysShowSend
+        containerStyle={styles.containerSend}>
+        <OIconButton
+          onClick={onSubmit}
+          style={{
+            height: 44,
+            width: 44,
+            borderRadius: 15,
+            borderWidth: 0,
+            opacity:
+              sendMessage?.loading ||
+                (message === '' && !image) ||
+                isMessagesLoading
+                ? 0.6
+                : 1,
+            borderColor: theme.colors.transparent,
+            backgroundColor: theme.colors.primary,
+          }}
+          icon={theme.images.general.send}
+          iconStyle={{
+            top: 1,
+          }}
+          disabled={
+            sendMessage?.loading ||
+            (message === '' && !image) ||
+            isMessagesLoading
+          }
+          disabledColor={theme.colors.white}
+        />
+      </Send>
+    );
+  };
+
+  const renderTime = (props: any) => (
+    <OText style={styles.timeText}>
+      {moment(props.currentMessage.createdAt).format('hh:mm A')}
+    </OText>
+  );
+
+  const renderBubble = (props: any) => {
+    const { key, rest } = splitReactKey(props);
+    return (
+      <Bubble
+        key={key}
+        {...rest}
+        renderTime={renderTime}
+        textStyle={{
+          left: {},
+          right: { color: theme.colors.textGray },
+        }}
+        containerStyle={{
+          left: { marginVertical: 5, borderTopLeftRadius: 30, marginLeft: 3 },
+          right: { marginVertical: 5, borderTopRightRadius: 30, marginRight: 3 },
+        }}
+        wrapperStyle={{
+          left: {
+            backgroundColor: theme.colors.inputDisabled,
+            padding: 5,
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
+            borderBottomRightRadius: 30,
+            borderBottomLeftRadius: 0,
+          },
+          right: {
+            backgroundColor: theme.colors.secondary,
+            padding: 5,
+            borderTopLeftRadius: 30,
+            borderTopRightRadius: 30,
+            borderBottomLeftRadius: 30,
+            borderBottomRightRadius: 0,
+          },
+        }}
+      />
+    );
+  };
+
+  const handleBubbleLongPress = (_context: unknown, currentMessage: any) => {
+    if (typeof currentMessage?.text !== 'string') return;
+
+    setBottomPopup({
+      kind: 'copy',
+      copyText: currentMessage.text,
+    });
+  };
+
+  const renderSafeMessageText = (messageTextProps: any) => {
+    const {
+      currentMessage = {},
+      position = 'left',
+      containerStyle,
+      textStyle,
+      linkStyle: linkStyleProp,
+      customTextStyle,
+      parsePatterns = () => [],
+      textProps,
+    } = messageTextProps;
+
+    if (typeof currentMessage.text !== 'string') {
+      return <View>{currentMessage.text}</View>;
+    }
+
+    const compat = giftedMsgTextCompatStyles[position === 'right' ? 'right' : 'left'];
+
+    const onUrlPress = (url: string) => {
+      if (WWW_URL_PATTERN.test(url)) {
+        onUrlPress(`https://${url}`);
+        return;
+      }
+      Linking.openURL(url).catch(() => { });
+    };
+
+    const onPhonePress = (phone: string) => {
+      const sanitized = sanitizePhoneForDial(phone);
+      if (!sanitized) return;
+
+      setBottomPopup({
+        kind: 'phone',
+        phoneRaw: phone.trim(),
+        phoneSanitized: sanitized,
+      });
+    };
+
+    const onEmailPress = (email: string) => {
+      Linking.openURL(`mailto:${email}`).catch(() => { });
+    };
+
+    const linkStyle = [compat.link, linkStyleProp?.[position]];
+
+    return (
+      <View style={[compat.container, containerStyle?.[position]]}>
+        <ParsedText
+          style={[compat.text, textStyle?.[position], customTextStyle]}
+          parse={[
+            ...parsePatterns(linkStyle),
+            { type: 'url', style: linkStyle, onPress: onUrlPress },
+            { type: 'phone', style: linkStyle, onPress: onPhonePress },
+            { type: 'email', style: linkStyle, onPress: onEmailPress },
+          ]}
+          childrenProps={{ ...textProps }}>
+          {currentMessage.text}
+        </ParsedText>
+      </View>
+    );
+  };
+
+  const renderMessageImage = (props: any) => {
+    const { key, rest } = splitReactKey(props);
+    return <MessageImage key={key} {...rest} />;
+  };
+
+  const renderScrollToBottomComponent = () => (
+    <MaterialCommunityIcon name="chevron-double-down" size={32} color={theme?.colors?.textNormal} />
+  );
+
+  const customMessage = (props: any) => {
+    const { key, rest } = splitReactKey(props);
+    return (
+      <Message
+        key={key}
+        {...rest}
+        containerStyle={{
+          right: {
+            flexDirection: 'column',
+          },
+          left: {
+            flexDirection: 'column-reverse',
+            alignItems: 'flex-start',
+          },
+        }}
+      />
+    );
+  };
+
+  const renderAvatar = (props: any) => {
+    const isMine = user?.id === props?.currentMessage?.user?._id;
+
+    return (
+      <View
+        style={{
+          marginBottom: 10,
+          alignItems: isMine ? 'flex-end' : 'flex-start',
+        }}>
+        <OText size={9} color={theme.colors.textGray}>
+          {`${t('SENT_TO', 'Sent to')}:`}
+        </OText>
+
+        <View style={{ flexDirection: 'row' }}>
+          {props?.currentMessage?.user?.can_see?.includes('2') &&
+            user?.level !== 2 && (
+              <View style={styles.avatar}>
+                <OIcon
+                  url={optimizeImage(order?.business?.logo, 'h_300,c_limit')}
+                  src={
+                    !order?.business?.logo &&
+                    theme?.images?.dummies?.businessLogo
+                  }
+                  style={styles.avatarIcon}
+                />
+              </View>
+            )}
+
+          {props?.currentMessage?.user?.can_see?.includes('3') && (
+            <View style={styles.avatar}>
+              <OIcon
+                url={optimizeImage(
+                  order?.customer?.photo ||
+                  theme?.images?.dummies?.customerPhoto,
+                  'h_300,c_limit',
+                )}
+                style={styles.avatarIcon}
+              />
+            </View>
+          )}
+
+          {props?.currentMessage?.user?.can_see?.includes('4') &&
+            user?.level !== 4 && (
+              <View style={{ ...styles.avatar, marginRight: 0 }}>
+                <OIcon
+                  url={
+                    optimizeImage(order?.driver?.photo, 'h_300,c_limit') ||
+                    theme?.images?.dummies?.driverPhoto
+                  }
+                  style={styles.avatarIcon}
+                />
+              </View>
+            )}
+        </View>
+      </View>
+    );
+  };
+
+  const renderNameMessage = (props: any) => {
+    const isMine = user?.id === props?.currentMessage?.user?._id;
+    if (isMine) return null;
+    return (
+      <View
+        style={{
+          alignItems: isMine ? 'flex-end' : 'flex-start',
+          paddingHorizontal: 10,
+        }}>
+        <OText weight="700">
+          {props?.currentMessage?.user?.name} (
+          {userRoles[props?.currentMessage?.user?.level]})
+        </OText>
+      </View>
+    );
+  };
+
+  const imgHeight = 120;
+  const signatureStyle = `
+    .m-signature-pad {
+      box-shadow: none;
+      border: none;
+    }
+    .m-signature-pad--body {
+      border: none;
+    }
+    .m-signature-pad--footer {
+      display: none;
+      margin: 0px;
+    }
+    body,html {
+      height: ${imgHeight}px;
+      border-radius: 10px;
+    }
+    .m-signature-pad--footer
+    .button {
+      background-color: red;
+      color: #FFF;
+    }
+  `;
+
+  const signatureRef = useRef<any>(null);
+
+  const handleClear = () => {
+    setImage && setImage(null);
+    signatureRef.current.clearSignature();
+  };
+
+  const handleEnd = () => {
+    signatureRef.current.readSignature();
+  };
+
+  const handleOK = (signature: any) => {
+    setImage && setImage(signature);
+  };
+
+  const renderChatFooter = () => {
+    return (
+      <View
+        style={{
+          height: imgHeight,
+          paddingHorizontal: 30,
+          paddingVertical: 10,
+          borderTopColor: theme.colors.tabBar,
+          borderTopWidth: 1
+        }}
+      >
+        <SignatureScreen
+          ref={signatureRef}
+          onOK={handleOK}
+          webStyle={signatureStyle}
+          backgroundColor={theme.colors.composerView}
+          onEnd={handleEnd}
+        />
+        <TouchableOpacity
+          style={{
+            position: 'absolute',
+            right: 35,
+            top: 15
+          }}
+          onPress={handleClear}>
+          <MaterialCommunityIcon
+            name="close"
+            color={theme.colors.textGray}
+            size={24}
+          />
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
+  const chatPopupButtonParent: ViewStyle = {
+    width: '70%',
+    alignSelf: 'center',
+    marginBottom: 12,
+  };
+
+  const handleChatWrapperLayout = (e: any) => {
+    if (e?.nativeEvent?.layout?.height > 0) {
+      setChatLayoutReady(true);
+    }
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <Wrapper key={order?.id} onLayout={handleChatWrapperLayout}>
+        {chatLayoutReady ? (
+          <GiftedChat
+            key={order?.id}
+            messages={formattedMessages}
+            user={{
+              _id: user?.id,
+              name: user?.name,
+              avatar: user?.photo,
+            }}
+            onSend={onSubmit}
+            onInputTextChanged={onChangeMessage}
+            alignTop={false}
+            listViewProps={{
+              contentContainerStyle: {
+                flexGrow: 1,
+                justifyContent: 'flex-end',
+                paddingHorizontal: 22,
+                paddingBottom: 30,
+              },
+            }}
+            extraData={messages?.loading}
+            renderCustomView={renderNameMessage}
+            scrollToBottom
+            renderAvatar={renderAvatar}
+            showAvatarForEveryMessage={true}
+            renderChatFooter={isShowSignaturePad ? renderChatFooter : undefined}
+            renderInputToolbar={renderInputToolbar}
+            renderComposer={renderComposer}
+            renderSend={renderSend}
+            renderMessage={(props: any) => customMessage(props)}
+            renderBubble={renderBubble}
+            renderMessageText={renderSafeMessageText}
+            onLongPress={handleBubbleLongPress}
+            renderMessageImage={renderMessageImage}
+            scrollToBottomComponent={() => renderScrollToBottomComponent()}
+            messagesContainerStyle={{ paddingBottom: 25 }}
+            showUserAvatar={true}
+            bottomOffset={bottom}
+            minInputToolbarHeight={145}
+            isLoadingEarlier={messages?.loading}
+            renderLoading={() => (
+              <ActivityIndicator size="small" color={theme.colors.black} />
+            )}
+            keyboardShouldPersistTaps="handled"
+          />
+        ) : (
+          <ActivityIndicator
+            size="small"
+            color={theme.colors.black}
+            style={{ marginTop: 20 }}
+          />
+        )}
+      </Wrapper>
+      <OBottomPopup
+        open={bottomPopup.kind !== 'idle'}
+        onClose={handleCloseBottomPopup}
+        title={
+          bottomPopup.kind === 'phone'
+            ? bottomPopup.phoneRaw
+            : bottomPopup.kind === 'copy'
+              ? t('COPY_TEXT', 'Copy Text')
+              : ''
+        }
+        titleStyle={{ textAlign: 'center', fontSize: 16 }}
+        containerStyle={{ paddingBottom: 28 }}>
+        {bottomPopup.kind === 'phone' ? (
+          <View>
+            <OButton
+              text={t('CALL', 'Call')}
+              bgColor={theme.colors.primary}
+              borderColor={theme.colors.primary}
+              parentStyle={chatPopupButtonParent}
+              textStyle={{ color: theme.colors.white }}
+              onClick={() => {
+                Linking.openURL(`tel:${bottomPopup.phoneSanitized}`).catch(
+                  () => { },
+                );
+                handleCloseBottomPopup();
+              }}
+            />
+            <OButton
+              text={t('TEXT', 'Text')}
+              bgColor={theme.colors.primary}
+              borderColor={theme.colors.primary}
+              parentStyle={chatPopupButtonParent}
+              textStyle={{ color: theme.colors.white }}
+              onClick={() => {
+                Linking.openURL(`sms:${bottomPopup.phoneSanitized}`).catch(
+                  () => { },
+                );
+                handleCloseBottomPopup();
+              }}
+            />
+            <OButton
+              text={t('CANCEL', 'Cancel')}
+              bgColor={theme.colors.inputDisabled}
+              borderColor={theme.colors.tabBar}
+              parentStyle={{ ...chatPopupButtonParent, marginBottom: 24 }}
+              textStyle={{ color: theme.colors.black }}
+              onClick={handleCloseBottomPopup}
+            />
+          </View>
+        ) : null}
+        {bottomPopup.kind === 'copy' ? (
+          <View>
+            <OButton
+              text={t('COPY_TEXT', 'Copy Text')}
+              bgColor={theme.colors.primary}
+              borderColor={theme.colors.primary}
+              parentStyle={chatPopupButtonParent}
+              textStyle={{ color: theme.colors.white }}
+              onClick={() => {
+                Clipboard.setString(bottomPopup.copyText);
+                handleCloseBottomPopup();
+              }}
+            />
+            <OButton
+              text={t('CANCEL', 'Cancel')}
+              bgColor={theme.colors.inputDisabled}
+              borderColor={theme.colors.tabBar}
+              parentStyle={{ ...chatPopupButtonParent, marginBottom: 24 }}
+              textStyle={{ color: theme.colors.black }}
+              onClick={handleCloseBottomPopup}
+            />
+          </View>
+        ) : null}
+      </OBottomPopup>
+    </SafeAreaView>
+  );
+};
+
+export const Chat = (props: MessagesParams) => {
+  const MessagesProps = {
+    ...props,
+    UIComponent: ChatUI,
+  };
+  return <MessagesController {...MessagesProps} />;
+};
