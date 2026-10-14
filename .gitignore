@@ -83,3 +83,17 @@ i18n/.env
 
 # translate-keys working batches
 i18n/batches/
+
+# Local onboarding backups (public config only)
+.ordering-setup/
+.bundle/
+
+# Own native service registrations and signing material
+android/app/google-services.json
+ios/GoogleService-Info.plist
+*.mobileprovision
+*.p12
+*.p8
+
+# Generated local simulator project, never used for releases
+ios/.ordering-local-*

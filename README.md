@@ -1,74 +1,59 @@
 # Ordering Business App
 
-Mobile app for business operators: orders, stores, messages, printing and offline actions.
+## Start with an agent
 
-A bare React Native project for Android and iOS. React Native 0.81.1, React 19.1.0 and TypeScript.
+Copy this prompt into your coding agent:
 
-## Requirements
+> Clone https://github.com/Ordering-co/ordering-app-business.git into a new folder with pinned submodules. Preserve existing work. Read README and help me launch Business App for my Ordering project in a local simulator without Firebase. Reuse my Ordering connection or accept my project slug. Verify the selected project and one visible edit.
 
-- Node.js 22 LTS (React Native requires Node >=20.19.4) and Yarn Classic 1.22.
-- Android: JDK 17, Android Studio, and the SDK and NDK versions specified in `android/build.gradle`.
-- iOS: macOS, Xcode compatible with React Native 0.81, Ruby as specified in `.ruby-version`, Bundler and CocoaPods as specified in `Gemfile.lock`. [React Native 0.81 requires Xcode 16.1 or later](https://reactnative.dev/blog/2025/08/12/react-native-0.81).
-- An Ordering project with API and sockets enabled to test real workflows.
+## See the app without Firebase
 
-## Get the source
+You can inspect Home, open the login form and edit the interface using an explicit **local iOS Simulator preview**. It uses your validated public Ordering project and skips Firebase setup. It does not create a Firebase project or copy another team's configuration.
+
+1. Use your Ordering project slug. Reuse an existing agent connection, or provide the slug manually; configuring the app does not sign you in.
+2. Clone into a new folder and install pinned dependencies. If a checkout exists, verify its remote and preserve its changes.
+3. Start the local preview:
 
 ```sh
-git clone --recurse-submodules https://github.com/Ordering-co/ordering-app-business-v26.git
-cd ordering-app-business-v26
+git clone --recurse-submodules https://github.com/Ordering-co/ordering-app-business.git
+cd ordering-app-business
 yarn install --frozen-lockfile
-```
-
-The SDK is a submodule from `https://github.com/Finitless-com/ordering-components.git`. If you cloned without submodules, run `git submodule update --init --recursive`. Keep the revision pinned by the repository's gitlink.
-
-## Configure your application
-
-Edit `src/config.json` and replace `YOUR_PROJECT` with your project. Review `api`, `socket`, language, app name and product settings. Public identifiers and product options are defined in the source. `src/theme.json` contains the theme and visual assets.
-
-`builder.json`, `app.json`, Android/iOS projects and schemes must match your application identifiers. Set up your own bundle identifier, Apple team, provisioning profiles and signing in Xcode. Configure your own Android release signing; `android/app/debug.keystore` is the public debug template and must not be used to publish a production application.
-
-Add your own Firebase registrations at `android/app/google-services.json` and `ios/GoogleService-Info.plist`, and ensure the plist belongs to the `businessApp` target. These service files are required for native builds using Firebase. Replace native Maps placeholders and configure the integrations you enable with your own service settings. Keep private credentials, provisioning profiles and production keystores out of the repository.
-
-Operators need an account with administrator or business owner permissions. Printing requires a compatible printer and your own configuration.
-
-## Run
-
-```sh
-yarn start
-# In another terminal:
-yarn android
-```
-
-For iOS, install Ruby dependencies and pods first:
-
-```sh
-bundle install
+# With the repository's Ruby/Bundler versions active:
+bundle _2.7.1_ install
 cd ios
-bundle exec pod install
+bundle _2.7.1_ exec pod install --deployment
 cd ..
-yarn ios
+yarn ordering:ios-local --without-firebase --project YOUR_PROJECT_SLUG
 ```
 
-Running on a device requires your own permissions and services. Metro serves JavaScript; it does not by itself produce APK/IPA files or verify login, orders, payments, location or notifications.
+4. Success means the native app opens and shows **Local preview · project: YOUR_PROJECT_SLUG**, Home and Login. Verify a visible change with Fast Refresh. On hosts without the Simulator desktop app, inspect the running simulator through device tooling; a successful build alone is insufficient.
 
-## Validate
+Local preview disables Firebase, push registration and automatic offline replay. Maps need your own keys for real use. Login with your own **administrator or business owner (levels 0 and 2)** account is a separate check; public project validation does not grant access. Release builds and normal launches retain their original Firebase requirements.
+
+## Requirements and manual setup
+
+React Native 0.81.1, React 19.1.0 and TypeScript; a public SDK submodule is pinned at `src/@/components`.
+
+- Node **>=20.19.4** (Node 22 recommended) and Yarn Classic 1.22.
+- iOS: macOS, Xcode **>=16.1**, Ruby **3.3.10**, Bundler **2.7.1** and CocoaPods **1.16.2** from `Gemfile.lock`.
+- Android: JDK 17, SDK Platform 36, Build Tools 36.0.0 and NDK 27.1.12297006 as declared in `android/build.gradle`.
+
+See the [full onboarding runbook](docs/onboarding.md) for public configuration, normal Firebase setup, Android, diagnosis, switching/disconnecting projects and updates. The [verification record](docs/onboarding-verification.md) separates JavaScript tests, native builds and visible screens. React Native's [0.81 release requirements](https://reactnative.dev/blog/2025/08/12/react-native-0.81) and [environment guide](https://reactnative.dev/docs/0.81/set-up-your-environment) provide toolchain details.
+
+## Checks
 
 ```sh
 yarn lint:check
 yarn exec tsc --noEmit
-yarn test --runInBand
-yarn test:coverage --runInBand
+yarn test:coverage --runInBand --watchman=false
 yarn test:coverage:summary --no-run
+node --test scripts/onboarding/core.test.mjs scripts/onboarding/ios-local.test.mjs
 yarn i18n:verify
 yarn i18n:check-generated
 ```
 
-`yarn lint` applies changes; use `lint:check` for review. Coverage measures the paths listed in `jest/coverage-include.js`; CI requires a 70% average across statements, branches, functions and its line-count fallback. Mocks do not replace device testing against your backend.
-
-## Translations
-
-`i18n/translations.json` is the locale catalog. Run `yarn i18n:generate` to regenerate derived files and see `i18n/README.md`. English fallback values provide visible text where a translation is still missing; review translations before distributing your app in those languages.
+`yarn lint` fixes files; `lint:check` only reports. See [i18n/README.md](i18n/README.md) for translation maintenance. Local checks require no backend credentials; `i18n:sync:live` writes server data and needs a separate authorization.
 
 ## License
 
-This code is distributed under the terms in [license-ordering.txt](license-ordering.txt). Dependencies, the SDK and third-party assets retain their own licenses and notices.
+The app is distributed under [license-ordering.txt](license-ordering.txt). The SDK, dependencies, assets and notices retain their respective licenses.

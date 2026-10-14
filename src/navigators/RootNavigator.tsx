@@ -5,14 +5,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
 import OneSignal from 'react-native-onesignal';
-import {
-  getMessaging,
-  getToken,
-  getInitialNotification,
-  onNotificationOpenedApp,
-  onMessage,
-  onTokenRefresh
-} from '@react-native-firebase/messaging';
+
 import notifee, { AndroidImportance, EventType } from '@notifee/react-native';
 import { requestNotifications } from 'react-native-permissions';
 import NetInfo from '@react-native-community/netinfo';
@@ -21,6 +14,7 @@ dayjs.extend(isSameOrAfter);
 dayjs.extend(utc);
 
 import settings from '../config.json';
+import { isLocalSimulatorMode } from '../onboarding/ios-local-mode';
 import * as RootNavigation from '../navigators/NavigationRef';
 
 import { useSession, useConfig, useOrder, useWebsocket, useApi } from '@components';
@@ -35,6 +29,12 @@ import { getPushOpenOrderPlan } from './getPushOpenOrderPlan'
 import { getOneSignalSetupPlan, shouldRegisterPushToken } from './getOneSignalSetupPlan'
 import { getFirebasePushSetupPlan, getOpenedPushOrderId, isFirebasePushEnabled } from './getFirebasePushSetupPlan'
 import { subscribeOrdersRegisterVibration } from './subscribeOrdersRegisterVibration'
+
+// Firebase is not even imported in the opt-in local simulator.
+const {
+  getMessaging, getToken, getInitialNotification,
+  onNotificationOpenedApp, onMessage, onTokenRefresh
+} = isLocalSimulatorMode() ? {} : require('@react-native-firebase/messaging')
 
 const Stack = createStackNavigator();
 const { _retrieveStoreData, _setStoreData } = StoreMethods
@@ -61,6 +61,7 @@ const RootNavigator = () => {
   const firebaseEnabled = isFirebasePushEnabled(configs)
 
   const firebasePushSetup = async () => {
+    if (isLocalSimulatorMode()) { setIsPushLoading({ loading: false }); return }
     setIsPushLoading({ loading: true });
     const messaging = getMessaging()
 
@@ -154,6 +155,7 @@ const RootNavigator = () => {
   };
 
   const oneSignalSetup = async () => {
+    if (isLocalSimulatorMode()) { setIsPushLoading({ loading: false }); return }
     setIsPushLoading({ loading: true });
     const data = {
       appId: configs?.onesignal_businessapp_id?.value,
@@ -251,6 +253,7 @@ const RootNavigator = () => {
   }, [sessionLoading, isPushLoading]);
 
   useEffect(() => {
+    if (isLocalSimulatorMode()) { setIsPushLoading({ loading: false }); return }
     const plan = getOneSignalSetupPlan({
       configsLoading,
       onesignalAppId: firebaseEnabled ? null : configs?.onesignal_businessapp_id?.value,
@@ -265,6 +268,7 @@ const RootNavigator = () => {
   }, [configsLoading, configs?.onesignal_businessapp_id?.value, auth])
 
   useEffect(() => {
+    if (isLocalSimulatorMode()) { setIsPushLoading({ loading: false }); return }
     const plan = getFirebasePushSetupPlan({
       configsLoading,
       enabled: firebaseEnabled,
@@ -279,6 +283,7 @@ const RootNavigator = () => {
   }, [configsLoading, configs?.firebase_push_enabled?.value, auth])
 
   const subscribePushNotifications = async () => {
+    if (isLocalSimulatorMode()) return
     if (!shouldRegisterPushToken({
       auth,
       notificationToken: oneSignalState.notification_token

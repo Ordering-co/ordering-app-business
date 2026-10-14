@@ -3,6 +3,7 @@ import { StyleSheet, StatusBar, View } from 'react-native';
 import { useTheme } from 'styled-components/native';
 
 import settings from '../config.json';
+import { hasConfiguredProject } from '../onboarding/prepareProjectStorage';
 import { Home as HomePage } from '@ui';
 
 export const Home = (props: any) => {
@@ -25,7 +26,7 @@ export const Home = (props: any) => {
       key: 'FAST_AND_EASY',
       value: 'Fast and easy',
     },
-    useRootPoint: settings.use_root_point,
+    useRootPoint: settings.use_root_point && (!__DEV__ || !hasConfiguredProject(settings)),
   };
 
   return (

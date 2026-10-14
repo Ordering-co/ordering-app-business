@@ -82,9 +82,9 @@ target 'businessApp' do
         # Disable bitcode (no longer supported by Apple since Xcode 14)
         build_config.build_settings['ENABLE_BITCODE'] = 'NO'
 
-        # Fix iOS deployment target for all pods (minimum 12.0)
-        if build_config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f < 12.0
-          build_config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+        # React Native 0.81 already requires this minimum; older pod targets fail on Xcode 27.
+        if build_config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'].to_f < min_ios_version_supported.to_f
+          build_config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = min_ios_version_supported
         end
       end
     end
