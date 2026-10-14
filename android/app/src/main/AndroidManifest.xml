@@ -25,7 +25,7 @@
         android:name="com.google.android.maps.v2.API_KEY"
         android:value="_GOOGLE_MAPS_API_KEY_"/>
       <meta-data android:name="com.onesignal.NotificationServiceExtension"
-                 android:value="com.ordering.push.NotificationServiceExtension" />
+                 android:value="${applicationId}.NotificationServiceExtension" />
       <uses-library android:name="org.apache.http.legacy" android:required="false"/>
       <activity
         android:name=".MainActivity"

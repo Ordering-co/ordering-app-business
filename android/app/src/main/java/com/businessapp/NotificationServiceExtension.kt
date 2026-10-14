@@ -1,4 +1,4 @@
-package com.ordering.push
+package com.businessapp
 
 import android.content.Context
 import androidx.core.app.NotificationCompat
@@ -22,7 +22,7 @@ class NotificationServiceExtension : OneSignal.OSRemoteNotificationReceivedHandl
     }
   }
 
-  companion object {
+  private companion object {
     const val ORDER_CHANNEL_ID = "new_order_alarm"
   }
 }

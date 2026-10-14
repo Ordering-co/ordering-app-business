@@ -14,7 +14,6 @@ import com.facebook.react.ReactNativeHost
 import com.facebook.react.ReactPackage
 import com.facebook.react.defaults.DefaultReactHost.getDefaultReactHost
 import com.facebook.react.defaults.DefaultReactNativeHost
-import com.ordering.push.NotificationServiceExtension.Companion.ORDER_CHANNEL_ID
 
 class MainApplication : Application(), ReactApplication {
 
@@ -66,5 +65,9 @@ class MainApplication : Application(), ReactApplication {
     }
     manager.createNotificationChannel(channel)
     manager.deleteNotificationChannel("orders")
+  }
+
+  companion object {
+    const val ORDER_CHANNEL_ID = "new_order_alarm"
   }
 }
