@@ -70,3 +70,11 @@ The actual cloned app displayed Home, Login and the selected project banner. A t
 ![First visible edit through Fast Refresh from the clean clone](evidence/business-clean-hmr.png)
 
 These screenshots contain the unauthenticated local preview, not a logged-in account. Account access, provider setup, production signing, Android and operational flows remain separate checks.
+
+### Published project-selector correction
+
+The original anonymous clone build and the screenshots/Fast Refresh proof above used `e3b44c6496917d1a956a791aeb419dd77df35289`. The clone was then advanced to the published correction `0b09f5cfaa5d22ecdd48aa277e9bdbf7844de1a8` before the final command verification; `ios/Podfile` and `ios/Podfile.lock` exactly matched that commit, with no local patch.
+
+With both `businessApp.xcodeproj` and the generated `.ordering-local-*` project still present, `bundle _2.7.1_ exec pod install --deployment` passed. The subsequent `yarn ordering:ios-local --without-firebase --project orderingv1` built, installed and launched successfully in 36.70 seconds, reusing the same verified owned Metro process and simulator. The synthetic app name/custom field and selected project remained exactly intact. After restoring CocoaPods' harmless project-file ordering changes, only `src/config.json` differed from the published clone; dependency versions, native IDs and SDK gitlink were preserved. No additional UI interaction or authenticated operation was performed during this final command check.
+
+The explicit [CocoaPods project selector](https://guides.cocoapods.org/syntax/podfile.html#project) prevents the multiple-project autodetection error without removing the generated project. The published fix changes the Podfile and its mechanical `PODFILE CHECKSUM` footer; it does not update packages.
