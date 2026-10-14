@@ -14,8 +14,8 @@ A bare React Native project for Android and iOS. React Native 0.81.1, React 19.1
 ## Get the source
 
 ```sh
-git clone --recurse-submodules https://github.com/Ordering-co/ordering-app-business-v26.git
-cd ordering-app-business-v26
+git clone --recurse-submodules https://github.com/Ordering-co/ordering-app-business.git
+cd ordering-app-business
 yarn install --frozen-lockfile
 ```
 

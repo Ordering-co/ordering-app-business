@@ -1,4 +1,4 @@
-package com.businessapp
+package com.ordering.push
 
 import android.content.Context
 import androidx.core.app.NotificationCompat
@@ -12,7 +12,7 @@ class NotificationServiceExtension : OneSignal.OSRemoteNotificationReceivedHandl
       val mutated = event.notification.mutableCopy()
       mutated.setExtender { builder ->
         builder
-          .setChannelId(MainApplication.ORDER_CHANNEL_ID)
+          .setChannelId(ORDER_CHANNEL_ID)
           .setPriority(NotificationCompat.PRIORITY_HIGH)
           .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
       }
@@ -20,5 +20,9 @@ class NotificationServiceExtension : OneSignal.OSRemoteNotificationReceivedHandl
     } catch (e: Throwable) {
       event.complete(event.notification)
     }
+  }
+
+  companion object {
+    const val ORDER_CHANNEL_ID = "new_order_alarm"
   }
 }
