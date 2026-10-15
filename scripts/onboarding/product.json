@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "product": "business-app",
+  "configFile": "src/config.json",
+  "projectPaths": [
+    {
+      "path": [
+        "project"
+      ],
+      "required": true
+    }
+  ],
+  "projectPlaceholders": [
+    "YOUR_PROJECT",
+    ""
+  ],
+  "iosTarget": "businessApp",
+  "localSetupMarker": "localProjectConfigured"
+}

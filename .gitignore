@@ -83,3 +83,7 @@ i18n/.env
 
 # translate-keys working batches
 i18n/batches/
+
+# Local onboarding state and generated simulator projects
+.ordering-setup/
+ios/.ordering-local-*

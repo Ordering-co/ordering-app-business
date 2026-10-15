@@ -1,5 +1,24 @@
 # Ordering Business App
 
+## Start with an agent
+
+1. Paste this prompt into your coding agent:
+
+> Reuse my existing checkout of Business App, checking its remote and preserving all work. If none exists, run `git clone --recurse-submodules https://github.com/Ordering-co/ordering-app-business.git` into a new folder. Follow README and docs/onboarding.md to launch my Ordering project in a local iOS simulator without Firebase. Reuse my Ordering connection or accept my project slug. Verify the selected project and one visible edit.
+
+2. Confirm the Ordering project. Reuse an existing connection; sign in only if account access is needed. A known project slug can be validated publicly without developer authentication.
+3. Open the preview, check its project label and make one visible edit with Fast Refresh. No account credentials or operational backend write are needed for this interface check.
+
+### Manual local preview
+
+Use Node >=20.19.4 (Node 22 recommended), Yarn 1 and the pinned Ruby/Bundler/CocoaPods versions. Install dependencies with `yarn install --frozen-lockfile`, run `bundle _2.7.1_ install`, then `bundle _2.7.1_ exec pod install --deployment` from `ios/`. Launch with:
+
+```sh
+yarn ordering:ios-local --without-firebase --project YOUR_PROJECT_SLUG
+```
+
+Success means the actual native screen shows `Local preview · project: YOUR_PROJECT_SLUG`, Home and Login, and a visible edit appears through Fast Refresh. See the [onboarding runbook](docs/onboarding.md) for configuration, normal native setup, switching, recovery, diagnosis and updates. Normal/Release startup retains its existing service registrations and behavior.
+
 Mobile app for business operators: orders, stores, messages, printing and offline actions.
 
 A bare React Native project for Android and iOS. React Native 0.81.1, React 19.1.0 and TypeScript.
@@ -12,6 +31,8 @@ A bare React Native project for Android and iOS. React Native 0.81.1, React 19.1
 - An Ordering project with API and sockets enabled to test real workflows.
 
 ## Get the source
+
+Reuse an existing checkout after inspecting its remote and preserving all changes. Clone into a new folder only when needed:
 
 ```sh
 git clone --recurse-submodules https://github.com/Ordering-co/ordering-app-business.git
