@@ -30,6 +30,7 @@ jest.mock('@components', () => {
 })
 
 import { BusinessController } from '..'
+import { OText } from '../../shared'
 import { renderWithProviders } from '../../../../../../jest/helpers/renderWithProviders'
 import { sampleBusiness } from '../../../../../../jest/helpers/b5StoresDefaults'
 
@@ -95,5 +96,69 @@ describe('BusinessController', () => {
       />
     )
     expect(queryByTestId('toggle-switch')).toBeNull()
+  })
+
+  describe('zipcode row', () => {
+    const renderWithZipcode = (zipcode: any) =>
+      renderWithProviders(
+        <BusinessController
+          businessState={{
+            loading: false,
+            business: { ...sampleBusiness, zipcode },
+            error: null
+          }}
+        />
+      )
+
+    it.each([-1, '-1', ' -1 ', null, undefined, '', '   '])(
+      'hides the zipcode row for sentinel/empty value %p',
+      (zipcode) => {
+        const { getByText, queryByText, UNSAFE_getAllByType } =
+          renderWithZipcode(zipcode)
+        expect(getByText('Store A')).toBeTruthy()
+        expect(getByText('123 Main St')).toBeTruthy()
+        expect(queryByText('-1')).toBeNull()
+        // only name + address rows render, the zipcode row is removed entirely
+        expect(UNSAFE_getAllByType(OText)).toHaveLength(2)
+      }
+    )
+
+    it.each([
+      ['00123', '00123'],
+      ['SW1A 1AA', 'SW1A 1AA'],
+      ['12345-6789', '12345-6789'],
+      [12345, '12345'],
+      ['  10001 ', '10001']
+    ])(
+      'renders normalized zipcode %p as %p',
+      (zipcode, expected) => {
+        const { getByText, UNSAFE_getAllByType } = renderWithZipcode(zipcode)
+        expect(getByText(expected)).toBeTruthy()
+        expect(UNSAFE_getAllByType(OText)).toHaveLength(3)
+      }
+    )
+
+    it('follows businessState when zipcode changes between renders', () => {
+      const withZipcode = (zipcode: any) => (
+        <BusinessController
+          businessState={{
+            loading: false,
+            business: { ...sampleBusiness, zipcode },
+            error: null
+          }}
+        />
+      )
+      const screen = renderWithProviders(withZipcode(-1))
+      expect(screen.queryByText('-1')).toBeNull()
+      expect(screen.UNSAFE_getAllByType(OText)).toHaveLength(2)
+
+      screen.rerender(withZipcode('00123'))
+      expect(screen.getByText('00123')).toBeTruthy()
+      expect(screen.UNSAFE_getAllByType(OText)).toHaveLength(3)
+
+      screen.rerender(withZipcode(''))
+      expect(screen.queryByText('00123')).toBeNull()
+      expect(screen.UNSAFE_getAllByType(OText)).toHaveLength(2)
+    })
   })
 })

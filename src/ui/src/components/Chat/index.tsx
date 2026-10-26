@@ -22,7 +22,7 @@ import {
   IMessage
 } from 'react-native-gifted-chat';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { pick, types } from '@react-native-documents/picker';
 import { useTheme } from 'styled-components/native';
@@ -46,6 +46,7 @@ import {
 
 import { OIcon, OIconButton, OText, OButton, OBottomPopup } from '../shared';
 import { capitalize } from '../../utils';
+import { useKeyboardVisible } from '../../../../hooks/useKeyboardVisible';
 const filterSpecialStatus = ['prepared_in', 'delivered_in', 'delivery_datetime']
 const driverManualMessages = ['manual_driver_assignment_comment', 'manual_driver_assignment_author_id']
 /** Attributes whose old/new are plain strings, not ORDER_STATUS indices */
@@ -120,6 +121,7 @@ const ChatUI = (props: MessagesParams) => {
   const [, t] = useLanguage();
   const [, { showToast }] = useToast();
   const theme = useTheme();
+  const isKeyboardVisible = useKeyboardVisible();
   const [{ configs }] = useConfig();
   const [messageList, setMessageList] = useState<any>([])
   const previousStatus = [1, 2, 5, 6, 10, 11, 12, 15, 16, 17]
@@ -190,8 +192,6 @@ const ChatUI = (props: MessagesParams) => {
   const handleClickQuickMessage = (text: string) => {
     setMessage && setMessage(`${message}${text}`)
   }
-
-  const { bottom } = useSafeAreaInsets();
 
   const [formattedMessages, setFormattedMessages] = useState<Array<any>>([]);
   const [chatLayoutReady, setChatLayoutReady] = useState(false);
@@ -1298,10 +1298,17 @@ const ChatUI = (props: MessagesParams) => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView
+      style={{ flex: 1 }}
+      edges={
+        isKeyboardVisible
+          ? ['top', 'right', 'left']
+          : ['top', 'right', 'bottom', 'left']
+      }>
       <Wrapper key={order?.id} onLayout={handleChatWrapperLayout}>
         {chatLayoutReady ? (
           <GiftedChat
+            isKeyboardInternallyHandled={false}
             key={order?.id}
             messages={formattedMessages}
             user={{
@@ -1337,7 +1344,6 @@ const ChatUI = (props: MessagesParams) => {
             scrollToBottomComponent={() => renderScrollToBottomComponent()}
             messagesContainerStyle={{ paddingBottom: 25 }}
             showUserAvatar={true}
-            bottomOffset={bottom}
             minInputToolbarHeight={145}
             isLoadingEarlier={messages?.loading}
             renderLoading={() => (

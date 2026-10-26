@@ -21,6 +21,9 @@ export const BusinessControllerUI = (props: BusinessControllerParams) => {
 
   const { loading, business, error } = businessState;
 
+  // Hide the '-1' placeholder and empty zipcodes.
+  const zipcode = String(business?.zipcode ?? '').trim();
+
   const theme = useTheme();
   const [{ optimizeImage }] = useUtils();
   const [, t] = useLanguage();
@@ -121,9 +124,11 @@ export const BusinessControllerUI = (props: BusinessControllerParams) => {
                   {business?.address}
                 </OText>
 
-                <OText style={styles.address} numberOfLines={1}>
-                  {business?.zipcode}
-                </OText>
+                {zipcode !== '' && zipcode !== '-1' && (
+                  <OText style={styles.address} numberOfLines={1}>
+                    {zipcode}
+                  </OText>
+                )}
               </Information>
             </TouchableOpacity>
 
