@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, View } from 'react-native'
+import { Platform, Text, View } from 'react-native'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import SplashScreen from 'react-native-splash-screen'
 import { prepareProjectStorage, isProjectOnboardingEnabled } from './prepareProjectStorage'
@@ -26,7 +26,7 @@ export const ProjectSetupGate = ({ settings, children }: { settings: any, childr
     return () => { active = false }
   }, [settings, onboardingEnabled])
   React.useEffect(() => {
-    if (ready || error) SplashScreen.hide()
+    if (error || (ready && Platform.OS === 'ios')) SplashScreen.hide()
   }, [ready, error])
   if (error) return <View accessible accessibilityRole="alert"><Text>Unable to prepare project storage. Close and reopen the app.</Text></View>
   if (!config) return null

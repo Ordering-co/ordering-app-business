@@ -2,6 +2,7 @@ package com.businessapp
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.facebook.react.ReactActivity
@@ -13,6 +14,7 @@ import org.devio.rn.splashscreen.SplashScreen
 class MainActivity : ReactActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         SplashScreen.show(this)
         super.onCreate(savedInstanceState)
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { LogBox } from 'react-native';
+import { LogBox, Platform } from 'react-native';
 import { LocalSimulatorBanner } from './onboarding/local-simulator-banner';
 import { ProjectSetupGate } from './onboarding/project-setup-gate';
 
@@ -41,7 +41,9 @@ theme.images = {
     logo: require('./assets/images/logo.png'),
   },
   general: {
-    loadingSplash: require('./assets/images/loading-splash.png'),
+    loadingSplash: Platform.OS === 'ios'
+      ? { uri: 'SplashImage' }
+      : require('../android/app/src/main/res/mipmap-xxxhdpi/splash.png'),
     notFound: require('./assets/images/not-found.png'),
     dropDown: require('./assets/icons/drop_down.png'),
     chevronDown: require('./assets/icons/chevron-down.png'),
