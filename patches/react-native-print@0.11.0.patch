@@ -1,0 +1,62 @@
+diff --git a/ios/RNPrint/RNPrint.m b/ios/RNPrint/RNPrint.m
+index dcc48670ac0ff0529bf8ec663b232561a68f05c8..192eecd42cfa8f09bddfb39b3cd7941b176ef963 100644
+--- a/ios/RNPrint/RNPrint.m
++++ b/ios/RNPrint/RNPrint.m
+@@ -5,6 +5,30 @@
+ #import <React/RCTConvert.h>
+ #import <React/RCTUtils.h>
+ 
++// The app uses the scene lifecycle: its AppDelegate has no `window` and UIApplication's
++// `keyWindow` is deprecated. The key window of the foreground scene is what these calls meant.
++static UIWindow *RNPrintKeyWindow(void) {
++    UIWindow *fallback = nil;
++    for (UIScene *scene in [UIApplication sharedApplication].connectedScenes) {
++        if (![scene isKindOfClass:[UIWindowScene class]]) {
++            continue;
++        }
++        UIWindowScene *windowScene = (UIWindowScene *)scene;
++        if (scene.activationState != UISceneActivationStateForegroundActive) {
++            continue;
++        }
++        for (UIWindow *window in windowScene.windows) {
++            if (window.isKeyWindow) {
++                return window;
++            }
++        }
++        if (!fallback) {
++            fallback = windowScene.windows.firstObject;
++        }
++    }
++    return fallback;
++}
++
+ @implementation RNPrint
+ 
+ - (dispatch_queue_t)methodQueue
+@@ -63,7 +87,7 @@ -(void)launchPrint:(NSData *) data
+        }
+       }];
+     } else if([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) { // iPad
+-        UIView *view = [[UIApplication sharedApplication] keyWindow].rootViewController.view;
++        UIView *view = RNPrintKeyWindow().rootViewController.view;
+         [printInteractionController presentFromRect:view.frame inView:view animated:YES completionHandler:completionHandler];
+     } else { // iPhone
+         [printInteractionController presentAnimated:YES completionHandler:completionHandler];
+@@ -152,7 +176,7 @@ -(void)launchPrint:(NSData *) data
+     };
+     
+     if([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPad) { // iPad
+-        UIView *view = [[UIApplication sharedApplication] keyWindow].rootViewController.view;
++        UIView *view = RNPrintKeyWindow().rootViewController.view;
+         CGFloat _x = 0;
+         CGFloat _y = 0;
+         if (options[@"x"]){
+@@ -170,7 +194,7 @@ -(void)launchPrint:(NSData *) data
+ #pragma mark - UIPrintInteractionControllerDelegate
+ 
+ -(UIViewController*)printInteractionControllerParentViewController:(UIPrintInteractionController*)printInteractionController  {
+-    UIViewController *result = [[[[UIApplication sharedApplication] delegate] window] rootViewController];
++    UIViewController *result = [RNPrintKeyWindow() rootViewController];
+     while (result.presentedViewController) {
+         result = result.presentedViewController;
+     }

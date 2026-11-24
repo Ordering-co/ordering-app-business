@@ -1,0 +1,60 @@
+buildscript {
+    ext {
+        buildToolsVersion = "37.0.0"
+        minSdkVersion = 29
+        compileSdkVersion = 37
+        targetSdkVersion = 36
+        ndkVersion = "27.1.12297006"
+        kotlinVersion = "2.2.0"
+        // @react-native-community/geolocation reads this key; react-native-maps declares its own
+        // Play Services versions (it reads googlePlayServicesLocationVersion)
+        playServicesLocationVersion = "21.3.0"
+        googlePlayServicesLocationVersion = "21.3.0"
+    }
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle")
+        classpath("com.facebook.react:react-native-gradle-plugin")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+
+        classpath("com.google.gms:google-services:4.4.4")
+        classpath("com.google.firebase:firebase-crashlytics-gradle:3.0.8")
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        // The Star SDK (stario10.aar) ships inside react-native-star-io10
+        flatDir {
+            dirs "$rootDir/../node_modules/react-native-star-io10/android/src/lib"
+        }
+    }
+}
+
+apply plugin: "com.facebook.react.rootproject"
+
+// AGP 9 turns BuildConfig off for libraries; several native libraries still declare BuildConfig
+// fields (or read their BuildConfig) and stop configuring without it.
+subprojects {
+    plugins.withId("com.android.library") {
+        android.buildFeatures.buildConfig = true
+    }
+}
+
+// react-native-print 0.11 (2023) hard-codes compileSdk 31 and build tools 31.0.0 in its own
+// build.gradle, which AGP 9 and today's AndroidX no longer accept (checkDebugAarMetadata). Its
+// source needs nothing else: it is built with the app's SDK. A fix here, not a patch of the package,
+// because that package's iOS side has its own patch.
+subprojects { subproject ->
+    if (subproject.name == "react-native-print") {
+        subproject.afterEvaluate {
+            subproject.android.compileSdkVersion(rootProject.ext.compileSdkVersion)
+            subproject.android.buildToolsVersion = rootProject.ext.buildToolsVersion
+        }
+    }
+}

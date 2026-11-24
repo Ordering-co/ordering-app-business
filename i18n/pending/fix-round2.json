@@ -1,0 +1,12 @@
+{
+  "SLA_SECTION_TITLE": "SLA",
+  "SLA_AT_RISK": "At risk",
+  "CHAT_PREPARATION_TIME_CHANGED": "Preparation time changed to _minutes_ min",
+  "CHAT_DELIVERY_TIME_CHANGED": "Delivery time changed to _minutes_ min",
+  "CHAT_DELIVERY_DATE_CHANGED": "Delivery time changed",
+  "CHAT_LOGISTIC_STATUS_CHANGED": "Logistic status changed to _status_",
+  "CHAT_REJECTED_REASON": "Rejected: _reason_",
+  "NO_DRIVERS_FOR_STORE": "No drivers for this store yet",
+  "NO_DRIVERS_FOR_STORE_HINT": "Drivers appear here once the store belongs to a driver group.",
+  "TICKET_NO_PRINTERS_HINT": "Share the ticket as a PDF or print it with the system printer. Add a printer in Profile to print here."
+}

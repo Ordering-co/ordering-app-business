@@ -1,0 +1,31 @@
+key,value,app_uses,submodule_uses
+"EAT_IN","Eat in",6,1
+"EAT_IN","Eat In",1,0
+"RECAPTCHA_VALIDATION_IS_REQUIRED","The captcha validation is required",0,2
+"RECAPTCHA_VALIDATION_IS_REQUIRED","The ReCaptcha validation is required.",0,3
+"NETWORK_ERROR","Network Error",13,6
+"NETWORK_ERROR","Network error",0,1
+"IN_QUEUE","In Queue",0,1
+"IN_QUEUE","In queue",1,0
+"EXPIRED","Logistic expired",0,1
+"EXPIRED","Expired",1,0
+"STRIPE_LOAD_ERROR","Failed to load Stripe properly",0,1
+"STRIPE_LOAD_ERROR","Faile to load Stripe properly",0,1
+"ORDER_STATUS_IN_BUSINESS","Driver arrived to business",0,1
+"ORDER_STATUS_IN_BUSINESS","Order status in business",1,0
+"REJECTED_BY_DRIVER","Rejected by driver",0,1
+"REJECTED_BY_DRIVER","Rejected by Driver",2,0
+"PREORDER","Preorder",2,1
+"PREORDER","PreOrder",1,0
+"ORDER_PICKEDUP_COMPLETED_BY_CUSTOMER","Pickup completed by customer",0,1
+"ORDER_PICKEDUP_COMPLETED_BY_CUSTOMER","Order picked up completed by customer",1,0
+"ORDER_STATUS_CANCELLED_BY_CUSTOMER","Cancelled by customer",0,1
+"ORDER_STATUS_CANCELLED_BY_CUSTOMER","Order status cancelled by customer",1,0
+"ORDER_NOT_PICKEDUP_BY_CUSTOMER","Not picked by customer",0,1
+"ORDER_NOT_PICKEDUP_BY_CUSTOMER","Order not picked up by customer",1,0
+"ORDER_DRIVER_ALMOST_ARRIVED_BUSINESS","Driver almost arrived to business",0,1
+"ORDER_DRIVER_ALMOST_ARRIVED_BUSINESS","Order driver almost arrived to business",1,0
+"ORDER_DRIVER_ALMOST_ARRIVED_CUSTOMER","Driver almost arrived to customer",0,1
+"ORDER_DRIVER_ALMOST_ARRIVED_CUSTOMER","Order driver almost arrived to customer",1,0
+"SERVICE_FEE","Service Fee",2,0
+"SERVICE_FEE","Service fee",2,0

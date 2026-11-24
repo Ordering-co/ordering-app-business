@@ -1,0 +1,16 @@
+node_modules
+coverage
+android
+ios
+jest
+scripts
+src/@/components
+**/__tests__
+
+# The print paths of Star, Epson and generic printers are frozen: they print on paper
+# and are covered by golden tests. `pnpm lint` runs with --fix, so they are kept out of
+# it; a change there is made on purpose, with a device and a printer.
+src/printing/usePrinterCommands.tsx
+src/printing/useGenericTicketCommands.ts
+src/printing/utils.tsx
+src/printing/escPos.ts

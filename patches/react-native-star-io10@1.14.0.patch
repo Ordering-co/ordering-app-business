@@ -1,0 +1,25 @@
+diff --git a/src/Lock.ts b/src/Lock.ts
+index 1495067988fd3051b4d455095d9fd3b0760aca19..cb0b7833d42b86d76745d82b71240c081cbeaa73 100644
+--- a/src/Lock.ts
++++ b/src/Lock.ts
+@@ -1,6 +1,6 @@
+ export class Lock {
+     private _locked: boolean = false;
+-    private _sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
++    private _sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+ 
+     async lock() {
+         while (this._locked) {
+diff --git a/src/StarIO10Logger.ts b/src/StarIO10Logger.ts
+index a54f70794b7426224ff94081ff4833afb5e7d6d8..43011c50d217ab966769881037a0f05a03675019 100644
+--- a/src/StarIO10Logger.ts
++++ b/src/StarIO10Logger.ts
+@@ -8,7 +8,7 @@ import { version } from '../package.json'
+ 
+ export class StarIO10Logger extends NativeObject {
+     private static _instance : StarIO10Logger;
+-    private _sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
++    private _sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+ 
+     private constructor() {
+         super();

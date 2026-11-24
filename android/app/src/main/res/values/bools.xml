@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Phones are portrait only; MainActivity reads this to lock the orientation. values-sw600dp overrides it. -->
+    <bool name="lock_portrait">true</bool>
+</resources>

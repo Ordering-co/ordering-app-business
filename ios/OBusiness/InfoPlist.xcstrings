@@ -1,0 +1,211 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "NSBluetoothAlwaysUsageDescription" : {
+      "comment" : "Privacy - Bluetooth Always Usage Description",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die App verwendet Bluetooth, um Belegdrucker in Ihrer Nähe zu finden und Tickets und Belege darauf zu drucken."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app uses Bluetooth to find receipt printers near you and to print tickets and receipts on them."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La aplicación usa Bluetooth para encontrar impresoras de tickets cerca de ti e imprimir en ellas tickets y recibos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'application utilise le Bluetooth pour trouver les imprimantes de tickets à proximité et y imprimer des tickets et des reçus."
+          }
+        }
+      }
+    },
+    "NSBluetoothPeripheralUsageDescription" : {
+      "comment" : "Privacy - Bluetooth Peripheral Usage Description",
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die App verwendet Bluetooth, um Belegdrucker in Ihrer Nähe zu finden und Tickets und Belege darauf zu drucken."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app uses Bluetooth to find receipt printers near you and to print tickets and receipts on them."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La aplicación usa Bluetooth para encontrar impresoras de tickets cerca de ti e imprimir en ellas tickets y recibos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'application utilise le Bluetooth pour trouver les imprimantes de tickets à proximité et y imprimer des tickets et des reçus."
+          }
+        }
+      }
+    },
+    "NSCameraUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die App verwendet die Kamera, um Ihr Profilbild und ein Foto aufzunehmen, das Sie in den Nachrichten einer Bestellung senden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app uses the camera to take your profile picture and a photo to send in the messages of an order."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La aplicación usa la cámara para tomar tu foto de perfil y una foto que enviar en los mensajes de un pedido."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'application utilise l'appareil photo pour prendre votre photo de profil et une photo à envoyer dans les messages d'une commande."
+          }
+        }
+      }
+    },
+    "NSLocalNetworkUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die App verwendet das lokale Netzwerk, um die Belegdrucker in Ihrem Netzwerk zu finden und Tickets und Belege darauf zu drucken."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app uses the local network to find the receipt printers on your network and to print tickets and receipts on them."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La aplicación usa la red local para encontrar las impresoras de tickets de tu red e imprimir en ellas tickets y recibos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'application utilise le réseau local pour trouver les imprimantes de tickets de votre réseau et y imprimer des tickets et des reçus."
+          }
+        }
+      }
+    },
+    "NSLocationAlwaysAndWhenInUseUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die App verwendet Ihren Standort, solange Sie sie nutzen, um Ihre Position auf den Karten von Bestellungen und Geschäften anzuzeigen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app uses your location while you use it, to show your position on the maps of orders and stores."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La aplicación usa tu ubicación mientras la utilizas, para mostrar tu posición en los mapas de los pedidos y de las tiendas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'application utilise votre position pendant que vous l'utilisez, pour l'afficher sur les cartes des commandes et des magasins."
+          }
+        }
+      }
+    },
+    "NSLocationWhenInUseUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die App verwendet Ihren Standort, solange Sie sie nutzen, um Ihre Position auf den Karten von Bestellungen und Geschäften anzuzeigen."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app uses your location while you use it, to show your position on the maps of orders and stores."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La aplicación usa tu ubicación mientras la utilizas, para mostrar tu posición en los mapas de los pedidos y de las tiendas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'application utilise votre position pendant que vous l'utilisez, pour l'afficher sur les cartes des commandes et des magasins."
+          }
+        }
+      }
+    },
+    "NSPhotoLibraryUsageDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die App greift auf die Fotomediathek zu, damit Sie Ihr Profilbild und ein Bild auswählen können, das Sie in den Nachrichten einer Bestellung senden."
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The app uses the photo library so you can choose your profile picture and an image to send in the messages of an order."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La aplicación accede a la fototeca para que elijas tu foto de perfil y una imagen que enviar en los mensajes de un pedido."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L'application accède à la photothèque pour que vous choisissiez votre photo de profil et une image à envoyer dans les messages d'une commande."
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

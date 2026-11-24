@@ -1,0 +1,277 @@
+# Catalog keys that no code reads any more
+
+Generated on 2026-11-19 by comparing the keys read by `src/` (outside the submodule, plus the submodule) now and on `main`. Nothing was removed from `i18n/translations.json`: the catalog is shared with the server dictionary (prefix `BUSINESS_APP_`) and other apps read the same keys, so a key is deleted only by a decision. Scanner-invisible reads (tables, `labelKey`, `make(...)`) are scanned since this round; keys built with a prefix (`t('DAY' + n)`) are kept by `DYNAMIC_ADDED` in `i18n/scanKeys.cjs`.
+
+## Read by the app on main, read by nothing now (161)
+
+The old screens (login, orders, order details, chat, stores, printers, profile) read them; the redesign dropped the text.
+
+- `ACCEPT_ALL` — Accept all
+- `ACTIVE_NOTIFICATION_TO_RECEIVE_INFORMATION` — Activate notifications to receive information about your orders
+- `ARRIVED_TO_BUSINESS` — Arrived to bussiness
+- `ASSIGN_DRIVER_INST` — Choose a driver to deliver the order.
+- `AUTO_PRINT_AFTER_ACCEPTING_ORDER` — Auto print after accepting order
+- `AVAILABLE_STATE_IS_UPDATED` — Available state is updated
+- `BUSINESSES` — Businesses
+- `CALL_YOUR_CUSTOMER_TO_RESOLVE_THE_ISSUE_AS_POLITELY_AS_POSSIBLE` — Call your customer to resolve the issue as politely as possible
+- `CATEGORIES` — Categories
+- `CHANGED` — Changed
+- `CHOOSE_PRINT_METHOD` — Choose system print or export a pdf
+- `CLEAR_FILTERS` — Clear filters
+- `CLEAR_SEARCh` — 
+- `CONNECTION_STATUS` — Connection status
+- `CONNECTION_STATUS_SHORT` — Status
+- `CONNECTION_TYPE` — Connection type
+- `CONNECTION_VIA_BLUETOOTH` — Via Bluetooth
+- `CONNECTION_VIA_LAN_WLAN` — Via LAN / Wi‑Fi
+- `CONNECTION_VIA_USB` — Via USB
+- `CONTACTS` — Contacts
+- `CUSTOMERS` — Customers
+- `DAY` — day
+- `DELETE_ALL_SESSIONS` — Delete all sessions
+- `DELETE_ALL_SESSIONS_EXCEPT_CURRENT` — Delete all sessions except current
+- `DELETE_PRODUCT` — Delete Product
+- `DELIVERY_ATRISK_STATUS_DESC` — Is the time between delivery time of busines and the delayed time.
+- `DELIVERY_COMPLETE` — Delivery complete
+- `DELIVERY_DELAYED_STATUS_DESC` — If this time is exceeded, the order will be delayed.
+- `DELIVERY_FAILED` — Delivery Failed
+- `DELIVERY_OK_STATUS_DESC` — Get delivery time from the businesses.
+- `DISTANCE_TO_THE_BUSINESS` — Distance to the business
+- `DRIVERS` — Drivers
+- `ENABLED_BUSINESS` — Enabled business
+- `ENABLE_NOTIFICATIONS` — Enable notifications
+- `ERROR_UPDATING_COORDS` — Error updating coords
+- `FOLLOW_UP` — Follow up
+- `FOLLOW_UP_INST` — Track driver on a map in real time, every order delivered in time
+- `FRIDAY` — Friday
+- `FRIDAY_ABBREVIATION` — Fri
+- `FROM` — From
+- `GO_TO_BUSINESSLIST` — Go to business list
+- `GO_TO_HOMEPAGE` — Go to homepage
+- `GO_TO_THIS_LOCATION` — Go to this location
+- `HOURS` — Hours
+- `HOW_WAS_YOUR_EXPERIENCE_WITH` — How was your experience with
+- `INVALID_PHONE_NUMBER` — Invalid phone number
+- `INVOICE_GROUP_NO` — Group No.
+- `LAST_30_DAYS` — Last 30 days
+- `LAST_UPDATE` — Last Update
+- `LINK_SEND_FORGOT_PASSWORD` — Link Sent
+- `LOADING_MORE_BUSINESSES` — Loading more businesses
+- `LOADING_MORE_PRODUCTS` — Loading more products
+- `LOGIN` — Login
+- `LOGOUT` — Logout
+- `MARK_THE_ORDER_AS_REJECTED` — Mark the order as rejected
+- `METTERS` — meters
+- `MINNUTES` — mins
+- `MOBILE_CHECKOUT_ORDER_DETAILS` — Order Details
+- `MOBILE_CONFIRM_PASSWORD` — Confirm Password
+- `MOBILE_NO_INTERNET` — No internet connection
+- `MONDAY` — Monday
+- `MONDAY_ABBREVIATION` — Mon
+- `MORE_INFO` — More info
+- `MORE_SETTINGS_GO_TO` — For more settings go to
+- `MY_ORDERS` — My orders
+- `NETWORK_OFFLINE_MESSAGE` — Your connection appears to be off-line. Try to refresh the page
+- `NEWEST` — Newest
+- `NEW_ORDERS_RECEIVED` — New orders have been received!
+- `NEXT_TIME` — Next time
+- `NOTE` — Note
+- `NOT_NUMBER` — There's not phonenumber.
+- `NOT_PHONE` — Not Phone
+- `NOT_SEND_MESSAGES` — You can't send messages because the order has ended
+- `NO_EXTERNAL_ID` — No external Id 
+- `NO_OPTIONS_IN_GROUP` — This group has no options
+- `NO_PRINTERS_CONFIGURED` — No printers configured
+- `NUMBER_CHANGES_PENDING_SYNC` — _value_ changes pending sync
+- `OR` — Or
+- `ORDER_DETAILS_INST` — See the order and manage it properly, accept or reject.
+- `ORDER_NUMBER` — Order number
+- `ORDER_NUMBERS` — Order Numbers
+- `ORDER_N_ORDERED` — Order #_order_id_ has been ordered.
+- `ORDER_PICKUP_COMPLETED_BY_CUSTOMER` — Pickup completed by customer
+- `ORDER_PLACED_FOR` — Order placed for
+- `OTHER` — Other
+- `OTP_EMAIL` — OTP Email
+- `OUTSIDE_ESTABLISHED_SCHEDULE` — You are outside the established schedule
+- `PAGE_NOT_FOUND` — Page not found
+- `PAPER_WIDTH_80_DEFAULT` — 80 mm (Default)
+- `PICKUP_COMPLETE` — Pickup complete
+- `PICKUP_COMPLETED_BY_CUSTOMER` — Pickup completed by customer
+- `PICKUP_FAILED` — Pickup failed
+- `PLEASE_RESEND_CODE` — Please resend code again
+- `PRINT` — Print
+- `PRINTER_BRAND_EPSON` — Epson
+- `PRINTER_BRAND_GENERIC` — Generic (ESC/POS)
+- `PRINTER_BRAND_STAR` — Star Micronics
+- `PRINTER_CONFIGURE` — Printer Configure
+- `PRINTER_NICKNAME` — Nickname
+- `PRINTER_SETTINGS` — Printer Settings
+- `PRINTER_USB_TARGET` — USB target
+- `PRINT_ORDER` — Print order
+- `PRINT_SETTINGS` — Print settings
+- `PRINT_SETTINGS_HINT` — Choose what each ticket prints on generic (ESC/POS) printers. Saved only on this device. The order number, products and total are always printed.
+- `PRINT_WITH_SYSTEM` — System printer
+- `QUESTION_DELETE_ALL_SESSIONS` — Are you sure that you want to delete all sessions?
+- `QUESTION_DELETE_PRODUCT` — Are you sure that you want to delete the product?
+- `RATE_THE_EXPERIENCE` — Rate the experience
+- `RECIEVE_ORDERS` — Receive orders
+- `RECIEVE_ORDERS_INST` — On every incoming order, a push notification will show.
+- `REFRESH` — Refresh
+- `REFRESH_PROFILE` — Refresh profile
+- `REJECT_ALL` — Reject all
+- `REJECT_REASONS_OPTIONS` — Reject reasons
+- `REVIEW_COMMENT_QUESTION` — Do you want to add something?
+- `SATURDAY` — Saturday
+- `SATURDAY_ABBREVIATION` — Sat
+- `SAVE_SHARE_PDF` — Save / Export PDF
+- `SCHEDULE` — Schedule
+- `SEARCH_AVAILABLE_PRINTER_MESSAGE` — Use the search icon to find an available printer
+- `SELECTED` — Selected
+- `SELECT_DATE` — Select Date
+- `SELECT_DELIVERY_TYPE` — Select Delivery type
+- `SELECT_PAPER_WIDTH` — Select paper width
+- `SELECT_PRINTER` — Select printer
+- `SELECT_STATUS` — Select Status
+- `SIGNUP` — Sign Up
+- `SLA_SETTING` — SLA’s Settings
+- `SLA_SETTINGS` — SLA’s Settings
+- `SPOT_NUMBER` — Spot number
+- `SUCCESS_SEND_FORGOT_PASSWORD` — Your link has been sent to the email
+- `SUNDAY` — Sunday
+- `SUNDAY_ABBREVIATION` — Sun
+- `THURSDAY` — Thurday
+- `THURSDAY_ABBREVIATION` — Thur
+- `TICKET_PREVIEW` — Ticket Preview
+- `TIME_IS_UP` — Time is up
+- `TIME_MIN` — min
+- `TRACK_REAL_TIME_POSITION` — Track real time position
+- `TUESDAY` — Tuesday
+- `TUESDAY_ABBREVIATION` — Tues
+- `TUTORIAL_BACK` — Back
+- `TUTORIAL_DONE` — Let's start!
+- `TUTORIAL_NEXT` — Next
+- `TUTORIAL_SKIP` — Skip
+- `UPDATE` — Update
+- `UPDATING` — Updating
+- `VALIDATION_ERROR_BLUETOOTH_PORN_REQUIRED` — Bluetooth port name is required
+- `VALIDATION_ERROR_IP_ADDRESS_REQUIRED` — Ip address is required
+- `VALIDATION_ERROR_PASSWORD_MIN_STRING` — The Password must be at least 8 characters.
+- `WARNING` — Warning
+- `WEBSOCKET_CONNECTING` — The websocket is connecting.
+- `WEBSOCKET_DISCONNECTED` — The server is slow, please reload.
+- `WEBSOCKET_OK` — The websocket works normally.
+- `WEDNESDAY` — Wednesday
+- `WEDNESDAY_ABBREVIATION` — Wed
+- `YOUR_CUSTOMER_WILL_RECEIVE_A_NOTIFICATION_ABOUT_THIS_ACTIONS` — Your customer will receive a notification about this actions
+- `YOUR_LOCATION` — Your Location
+- `YOUR_PREVIOUS_CELLPHONE` — Your previous cellphone
+- `YOU_CANT_LOGIN` — You can't login
+- `YOU_HAVE_BEEN_REMOVED_FROM_THE_ORDER` — You have been removed from the order
+
+## Read by the app on main and by the submodule, now only by the submodule (0)
+
+
+
+## Already orphans before this work (99)
+
+Legacy or other-product keys (also includes keys of the server dictionary the apps read by prefix).
+
+- `1`
+- `30`
+- `7`
+- `ARRIVED_TO_CUSTOMER`
+- `BY_EMAIL`
+- `BY_OTP_EMAIL`
+- `BY_OTP_PHONE`
+- `BY_PHONE`
+- `CONNECTION_VIA_LAN`
+- `DRIVER_NOT_ALLOWED_TO_REJECT_ORDER`
+- `EPSON_DISCOVERY_COMING_SOON`
+- `ERROR_GPS_BUTTON`
+- `ERROR_NOT_FOUND_ADDRESS`
+- `FAILED_TO_UPDATE_ORDER`
+- `HOW_WAS_YOUR_CUSTOMER`
+- `NO_BUSINESS_NEAR_LOCATION`
+- `PENDING_SYNC_CHANGES`
+- `REJECT_REASON_DESTINATION_UNREACHEABLE`
+- `REJECT_REASON_DRIVER_VEHICLE_INCIDENT`
+- `REJECT_REASON_FORGOT_COMPLETE_LOCATION`
+- `REJECT_REASON_INCORRECT_MISSING_ITEMS`
+- `REJECT_REASON_NOT_INTERNET_CONECTION`
+- `REJECT_REASON_RECIPIENT_UNAVAILABLE`
+- `REJECT_REASON_REFUSED_DAMAGE`
+- `REJECT_REASON_STORE_BUSY`
+- `REJECT_REASON_STORE_CLOSED`
+- `REJECT_REASON_STORE_RECIEVE_ORDER_LATE`
+- `REJECT_REASON_UNAVAILABLE_DRIVER`
+- `REJECT_REASON_VERY_FAR_AWAY`
+- `TITLE_SIGN_UP`
+- `VALIDATION_ERROR_ADDRESS_NOTES_REQUIRED`
+- `VALIDATION_ERROR_ADDRESS_REQUIRED`
+- `VALIDATION_ERROR_AFTER`
+- `VALIDATION_ERROR_AFTER_OR_EQUAL`
+- `VALIDATION_ERROR_ALPHA`
+- `VALIDATION_ERROR_ALPHA_DASH`
+- `VALIDATION_ERROR_ALPHA_NUM`
+- `VALIDATION_ERROR_ARRAY`
+- `VALIDATION_ERROR_BEFORE`
+- `VALIDATION_ERROR_BEFORE_OR_EQUAL`
+- `VALIDATION_ERROR_BETWEEN_ARRAY`
+- `VALIDATION_ERROR_BETWEEN_FILE`
+- `VALIDATION_ERROR_BETWEEN_NUMERIC`
+- `VALIDATION_ERROR_BETWEEN_STRING`
+- `VALIDATION_ERROR_BOOLEAN`
+- `VALIDATION_ERROR_CITY_DROPDOWN_OPTION_REQUIRED`
+- `VALIDATION_ERROR_CONFIRMED`
+- `VALIDATION_ERROR_COUPON_REQUIRED`
+- `VALIDATION_ERROR_DATE`
+- `VALIDATION_ERROR_DATE_FORMAT`
+- `VALIDATION_ERROR_DIFFERENT`
+- `VALIDATION_ERROR_DIGITS`
+- `VALIDATION_ERROR_DIGITS_BETWEEN`
+- `VALIDATION_ERROR_DIMENSIONS`
+- `VALIDATION_ERROR_DISTINCT`
+- `VALIDATION_ERROR_DRIVER_TIP_REQUIRED`
+- `VALIDATION_ERROR_EMAIL`
+- `VALIDATION_ERROR_EXISTS`
+- `VALIDATION_ERROR_FILE`
+- `VALIDATION_ERROR_FILLED`
+- `VALIDATION_ERROR_IMAGE`
+- `VALIDATION_ERROR_IMAGES_SRC`
+- `VALIDATION_ERROR_IN`
+- `VALIDATION_ERROR_IN_ARRAY`
+- `VALIDATION_ERROR_IP`
+- `VALIDATION_ERROR_JSON`
+- `VALIDATION_ERROR_MAX_ARRAY`
+- `VALIDATION_ERROR_MAX_FILE`
+- `VALIDATION_ERROR_MAX_NUMERIC`
+- `VALIDATION_ERROR_MAX_STRING`
+- `VALIDATION_ERROR_MIMES`
+- `VALIDATION_ERROR_MIMETYPES`
+- `VALIDATION_ERROR_MIN_ARRAY`
+- `VALIDATION_ERROR_MIN_FILE`
+- `VALIDATION_ERROR_MIN_NUMERIC`
+- `VALIDATION_ERROR_MIN_STRING`
+- `VALIDATION_ERROR_NOT_IN`
+- `VALIDATION_ERROR_NUMERIC`
+- `VALIDATION_ERROR_PRESENT`
+- `VALIDATION_ERROR_PRODUCTS`
+- `VALIDATION_ERROR_REGEX`
+- `VALIDATION_ERROR_REQUIRED_IF`
+- `VALIDATION_ERROR_REQUIRED_UNLESS`
+- `VALIDATION_ERROR_REQUIRED_WITH`
+- `VALIDATION_ERROR_REQUIRED_WITHOUT`
+- `VALIDATION_ERROR_REQUIRED_WITHOUT_ALL`
+- `VALIDATION_ERROR_REQUIRED_WITH_ALL`
+- `VALIDATION_ERROR_SAME`
+- `VALIDATION_ERROR_SCHEDULE`
+- `VALIDATION_ERROR_SIZE_ARRAY`
+- `VALIDATION_ERROR_SIZE_FILE`
+- `VALIDATION_ERROR_SIZE_NUMERIC`
+- `VALIDATION_ERROR_SIZE_STRING`
+- `VALIDATION_ERROR_STRING`
+- `VALIDATION_ERROR_TIMEZONE`
+- `VALIDATION_ERROR_UNIQUE`
+- `VALIDATION_ERROR_UPLOADED`
+- `VALIDATION_ERROR_URL`
+- `YOU_DO_NOT_HAVE_PERMISSION`

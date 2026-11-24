@@ -1,0 +1,14 @@
+{
+  "DEVICE_SIGNED_IN": "1 device signed in",
+  "ALL_PRODUCTS_AVAILABLE": "All products are available",
+  "MESSAGES_OFFLINE_NOTICE": "You are offline. Conversations will refresh when the connection returns.",
+  "STORE_TIME_ZONE_NOTE": "Times are in the store's time zone (_zone_).",
+  "STORE_TIME_ZONE": "Store time: _zone_",
+  "COPIED": "Copied",
+  "COPY_MESSAGE_TEXT": "Copy text",
+  "RECOVER_PASSWORD_BUTTON": "Recover password",
+  "GET_VERIFICATION_CODE": "Get verification code",
+  "VERIFY_PHONE_TITLE": "Verify phone",
+  "NAME": "Name",
+  "LASTNAME": "Last name"
+}

@@ -1,0 +1,48 @@
+[
+  {
+    "file": "src/theme/helpers\\.ts$",
+    "category": "font_family",
+    "reason": "The text helper itself: it picks the font file of a weight (the one place a family is set)"
+  },
+  {
+    "file": "shared/StableText\\.tsx$",
+    "category": "opacity",
+    "value": "0",
+    "reason": "The hidden bold copy that reserves a text's widest width, so selecting never moves the row: not a look"
+  },
+  {
+    "file": "shared/OOtpInput\\.tsx$",
+    "category": "opacity",
+    "value": "0",
+    "reason": "The hidden field that takes the typing of a code drawn in cells: invisible by function, not a design opacity"
+  },
+  {
+    "file": "shared/OSelect\\.tsx$",
+    "category": "size",
+    "reason": "A sheet's list never covers the whole screen: it scrolls past 60 % of the window height"
+  },
+  {
+    "file": "shared/OButton\\.tsx$",
+    "category": "size",
+    "value": "44",
+    "reason": "The smallest touch target (44 pt): a rule of the primitive, not a look (a smaller button grows its touch area)"
+  },
+  {
+    "file": "src/printing/(usePrinterCommands\\.tsx|useGenericTicketCommands\\.ts|utils\\.tsx)$",
+    "category": "font_size",
+    "property": "font-size",
+    "reason": "The printed ticket's own font sizes for the Star, Epson and generic ESC/POS commands (printer units, one per platform). These three files are the original app's print path moved under src/printing without a change (commit 8bbf275 restored it); the sizes are the ticket's, not a screen's look, and the on-screen paper is themed apart (components.ticket_paper)"
+  },
+  {
+    "file": "TicketPreview/TicketPaper\\.tsx$",
+    "category": "font_family",
+    "value": "Platform.select(",
+    "reason": "The on-screen paper's letters are the platform's fixed-pitch font (Menlo on iOS, monospace on Android): the printed ticket has a fixed pitch and the catalog's 10 fonts are proportional (docs/theme/tokens.md 2.5)"
+  },
+  {
+    "file": "TicketPreview/PrintingHost\\.tsx$",
+    "category": "opacity",
+    "value": "0",
+    "reason": "The canvas that draws a Star TSP100's ticket picture is a web view that must exist but not show: invisible by function, not a design opacity (as the OTP field's)"
+  }
+]

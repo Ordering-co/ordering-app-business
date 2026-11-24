@@ -1,0 +1,15 @@
+{
+  "PICKUP": {
+    "es": "Recoger",
+    "fr": "Ramassage",
+    "it": "Ritiro",
+    "de": "Abholung",
+    "pt": "Coleta",
+    "da": "Afhentning",
+    "nl": "Afhalen",
+    "ar": "الاستلام",
+    "el": "Παραλαβή",
+    "bg": "Вземане",
+    "tr": "Alım"
+  }
+}

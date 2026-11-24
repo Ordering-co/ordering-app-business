@@ -1,0 +1,21 @@
+{
+  "ORDER_PLACED_AT": "Order placed",
+  "CLEAR": "Clear",
+  "SEND_TO": "Send to",
+  "NO_DRIVER_YET": "No driver yet",
+  "SIGNATURE": "Signature",
+  "ATTACH_PHOTO": "Attach photo",
+  "ORDER_ENDED_NO_MESSAGES": "This order has ended, so you can't send new messages.",
+  "SEND_MESSAGE": "Send message",
+  "TEXT_COPIED": "Text copied",
+  "SCROLL_TO_BOTTOM": "Scroll to the last message",
+  "MESSAGE_OPTIONS": "Message options",
+  "ORDER_ATTRIBUTE_REMOVED": "Order _attribute_ removed",
+  "ORDER_ATTRIBUTE_SET_TO": "Order _attribute_ set to _to_",
+  "UNREAD": "Unread",
+  "NO_UNREAD_MESSAGES": "No unread messages",
+  "SEARCH_MESSAGES": "Search messages",
+  "SEAT_DELIVERY": "Seat delivery",
+  "CALL_CUSTOMER": "Call customer",
+  "SELECT_A_CONVERSATION": "Select a conversation"
+}

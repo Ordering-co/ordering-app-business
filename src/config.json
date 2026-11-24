@@ -1,0 +1,17 @@
+{
+  "app_id": "ordering-react-native",
+  "app_internal_name": "business_app",
+  "notification_app": "businessapp",
+  "app_name": "OrderingPlus",
+  "project": "YOUR_PROJECT",
+  "api": {
+    "url": "https://api.orderingplus.com",
+    "language": "en",
+    "version": "v400"
+  },
+  "socket": {
+    "url": "https://sockets.orderingplus.com"
+  },
+  "use_root_point": false,
+  "show_tutorials": true
+}

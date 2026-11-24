@@ -1,0 +1,7 @@
+{
+  "UNREAD_MESSAGES_COUNT": ":count: unread messages",
+  "UNREAD_MESSAGES_COUNT_ONE": ":count: unread message",
+  "NEW_ORDERS_COUNT": ":count: new orders",
+  "NEW_ORDERS_COUNT_ONE": ":count: new order",
+  "PROJECT_STEP_TEXT": "Enter your project name to continue."
+}
